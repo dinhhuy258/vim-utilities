@@ -1,7 +1,7 @@
-if exists('s:vim-utilities-loaded')
+if exists('s:vim_utilities_loaded')
    finish
 endif
-let s:vim-utilities-loaded = 1
+let s:vim_utilities_loaded = 1
 
 "================================================================================#
 "                       Remove trailing whitespaces                              #
