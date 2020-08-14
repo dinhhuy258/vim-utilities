@@ -166,42 +166,6 @@ endfunction
 call RedirectDefaultsToBlackHole()
 
 "================================================================================#
-"                                 Git browse                                     #
-"================================================================================#
-
-function! s:GitBrowse(normal_mode) abort
-  let l:file_dir = expand('%:h')
-  let l:git_root = system('git rev-parse --show-toplevel | tr -d "\n"')
-  if l:git_root =~ '\fatal:'
-    echo '[vim-utilities] Please use this method in git project'
-    return
-  endif
-  let l:file_path = substitute(expand('%:p'), git_root . '/', '', '')
-  let l:branch_name = system('git rev-parse --abbrev-ref HEAD | tr -d "\n"')
-  let l:git_remote_url = system('git remote get-url origin | tr -d "\n"')
-  let l:repo_url = l:git_remote_url[0:strlen(git_remote_url) - 5]
-  if empty(l:file_dir)
-    call system('open ' . l:repo_url)
-    return
-  endif
-  let l:repo_url = l:repo_url . '/blob/' . l:branch_name . '/' . l:file_path
-  if a:normal_mode
-    let l:line = line('.')
-    let l:repo_url .= '#L' . l:line
-    call system('open ' . l:repo_url)
-  else
-    let l:first_line = getpos("'<")[1]
-    let l:repo_url .= '#L' . l:first_line
-    let l:last_line = getpos("'>")[1]
-    if l:last_line != l:first_line | let l:repo_url .= '-L' . l:last_line | endif
-    call system('open ' . l:repo_url)
-  endif
-endfunction
-
-nnoremap <Leader>go :<C-u> silent call <SID>GitBrowse(v:true)<CR>
-xnoremap <Leader>go :<C-u> silent call <SID>GitBrowse(v:false)<CR>
-
-"================================================================================#
 "                                 Vim move                                       #
 "================================================================================#
 
