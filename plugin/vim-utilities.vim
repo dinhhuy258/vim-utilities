@@ -165,7 +165,7 @@ call RedirectDefaultsToBlackHole()
 "                                 Git browse                                     #
 "================================================================================#
 
-function! s:GitBrowse() abort
+function! s:GitBrowse(normal_mode) abort
   let l:file_dir = expand('%:h')
   let l:git_root = system('git rev-parse --show-toplevel | tr -d "\n"')
   if l:git_root =~ '\fatal:'
@@ -181,20 +181,178 @@ function! s:GitBrowse() abort
     return
   endif
   let l:repo_url = l:repo_url . '/blob/' . l:branch_name . '/' . l:file_path
-  if mode() isnot 'n'
+  if a:normal_mode
+    let l:line = line('.')
+    let l:repo_url .= '#L' . l:line
+    call system('open ' . l:repo_url)
+  else
     let l:first_line = getpos("'<")[1]
     let l:repo_url .= '#L' . l:first_line
     let l:last_line = getpos("'>")[1]
     if l:last_line != l:first_line | let l:repo_url .= '-L' . l:last_line | endif
     call system('open ' . l:repo_url)
-  else
-    let l:line = line('.')
-    let l:repo_url .= '#L' . l:line
-    call system('open ' . l:repo_url)
   endif
 endfunction
 
-command! GitBrowse call s:GitBrowse()
+nnoremap <Leader>go :<C-u> silent call <SID>GitBrowse(v:true)<CR>
+xnoremap <Leader>go :<C-u> silent call <SID>GitBrowse(v:false)<CR>
+
+"================================================================================#
+"                                 Vim move                                       #
+"================================================================================#
+
+function! s:MoveVertically(first, last, distance) abort
+  if !&modifiable || a:distance == 0
+    return
+  endif
+
+  let l:first = line(a:first)
+  let l:last  = line(a:last)
+
+  let l:old_pos = getcurpos()
+  if a:distance < 0
+    call cursor(l:first, 1)
+    execute 'normal!' (-a:distance).'k'
+    let l:after = line('.') - 1
+  else
+    call cursor(l:last, 1)
+    execute 'normal!' a:distance.'j'
+    let l:after = (foldclosedend('.') == -1 ? line('.') : foldclosedend('.'))
+  endif
+
+  call setpos('.', l:old_pos)
+
+  execute l:first ',' l:last 'move' l:after
+
+  " Auto indent
+  let l:first = line("'[")
+  let l:last  = line("']")
+
+  call cursor(l:first, 1)
+  normal! ^
+  let l:old_indent = virtcol('.')
+  normal! ==
+  let l:new_indent = virtcol('.')
+
+  if l:first < l:last && l:old_indent != l:new_indent
+    let l:op = (l:old_indent < l:new_indent
+      \  ? repeat('>', l:new_indent - l:old_indent)
+      \  : repeat('<', l:old_indent - l:new_indent))
+    let l:old_sw = &shiftwidth
+    let &shiftwidth = 1
+    execute l:first+1 ',' l:last l:op
+    let &shiftwidth = l:old_sw
+  endif
+
+  call cursor(l:first, 1)
+  normal! 0m[
+  call cursor(l:last, 1)
+  normal! $m]
+endfunction
+
+function! s:MoveLineVertically(distance) abort
+  let l:old_col    = col('.')
+  normal! ^
+  let l:old_indent = col('.')
+
+  call s:MoveVertically('.', '.', a:distance)
+
+  normal! ^
+  let l:new_indent = col('.')
+  call cursor(line('.'), max([1, l:old_col - l:old_indent + l:new_indent]))
+endfunction
+
+function! s:MoveBlockVertically(distance) abort
+  call s:MoveVertically("'<", "'>", a:distance)
+  normal! gv
+endfunction
+
+function! s:MoveHorizontally(corner_start, corner_end, distance) abort
+  if !&modifiable || a:distance == 0
+    return 0
+  endif
+
+  let l:cols = [col(a:corner_start), col(a:corner_end)]
+  let l:first = min(l:cols)
+  let l:last  = max(l:cols)
+  let l:width = l:last - l:first + 1
+
+  let l:before = max([1, l:first + a:distance])
+  if a:distance > 0
+    let l:lines = getline(a:corner_start, a:corner_end)
+    let l:shortest = min(map(l:lines, 'strwidth(v:val)'))
+    if l:last < l:shortest
+      let l:before = min([l:before, l:shortest - l:width + 1])
+    else
+      let l:before = l:first
+    endif
+  endif
+
+  if l:first == l:before
+    return 0
+  endif
+
+  let l:old_default_register = @"
+  normal! x
+
+  let l:old_virtualedit = &virtualedit
+  if l:before >= col('$')
+    let &virtualedit = 'all'
+  else
+    let &virtualedit = ''
+  endif
+
+  call cursor(line('.'), l:before)
+  normal! P
+
+  let &virtualedit = l:old_virtualedit
+  let @" = l:old_default_register
+
+  return 1
+endfunction
+
+function! s:MoveCharHorizontally(distance) abort
+  call s:MoveHorizontally('.', '.', a:distance)
+endfunction
+
+function! s:MoveBlockHorizontally(distance) abort
+  execute "normal! g`<\<C-v>g`>"
+  if s:MoveHorizontally("'<", "'>", a:distance)
+    execute "normal! g`[\<C-v>g`]"
+  endif
+endfunction
+
+function s:HalfPageSize() abort
+  return winheight('.') / 2
+endfunction
+
+vnoremap <silent> <Plug>MoveBlockHalfPageDown :<C-u> silent call <SID>MoveBlockVertically(v:count1 * <SID>HalfPageSize())<CR>
+vnoremap <silent> <Plug>MoveBlockHalfPageUp :<C-u> silent call <SID>MoveBlockVertically(-v:count1 * <SID>HalfPageSize())<CR>
+vnoremap <silent> <Plug>MoveBlockDown :<C-u> silent call <SID>MoveBlockVertically(v:count1)<CR>
+vnoremap <silent> <Plug>MoveBlockUp :<C-u> silent call <SID>MoveBlockVertically(-v:count1)<CR>
+vnoremap <silent> <Plug>MoveBlockRight :<C-u> silent call <SID>MoveBlockHorizontally(v:count1)<CR>
+vnoremap <silent> <Plug>MoveBlockLeft :<C-u> silent call <SID>MoveBlockHorizontally(-v:count1)<CR>
+
+nnoremap <silent> <Plug>MoveLineHalfPageDown :<C-u> silent call <SID>MoveLineVertically(v:count1 * <SID>HalfPageSize())<CR>
+nnoremap <silent> <Plug>MoveLineHalfPageUp :<C-u> silent call <SID>MoveLineVertically(-v:count1 * <SID>HalfPageSize())<CR>
+nnoremap <silent> <Plug>MoveLineDown :<C-u> silent call <SID>MoveLineVertically(v:count1)<CR>
+nnoremap <silent> <Plug>MoveLineUp :<C-u> silent call <SID>MoveLineVertically(-v:count1)<CR>
+nnoremap <silent> <Plug>MoveCharRight :<C-u> silent call <SID>MoveCharHorizontally(v:count1)<CR>
+nnoremap <silent> <Plug>MoveCharLeft :<C-u> silent call <SID>MoveCharHorizontally(-v:count1)<CR>
+
+execute 'vmap' '<A-d>' '<Plug>MoveBlockHalfPageDown'
+execute 'vmap' '<A-u>' '<Plug>MoveBlockHalfPageUp'
+execute 'vmap' '<A-j>' '<Plug>MoveBlockDown'
+execute 'vmap' '<A-k>' '<Plug>MoveBlockUp'
+execute 'vmap' '<A-h>' '<Plug>MoveBlockLeft'
+execute 'vmap' '<A-l>' '<Plug>MoveBlockRight'
+
+execute 'nmap' '<A-d>' '<Plug>MoveLineHalfPageDown'
+execute 'nmap' '<A-u>' '<Plug>MoveLineHalfPageUp'
+execute 'nmap' '<A-j>' '<Plug>MoveLineDown'
+execute 'nmap' '<A-k>' '<Plug>MoveLineUp'
+execute 'nmap' '<A-h>' '<Plug>MoveCharLeft'
+execute 'nmap' '<A-l>' '<Plug>MoveCharRight'
 
 "================================================================================#
 "                                    End                                         #
