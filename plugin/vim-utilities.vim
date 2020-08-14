@@ -292,37 +292,37 @@ function! s:MoveBlockHorizontally(distance) abort
   endif
 endfunction
 
-function s:HalfPageSize() abort
+function s:GetHalfPageSize() abort
   return winheight('.') / 2
 endfunction
 
-vnoremap <silent> <Plug>MoveBlockHalfPageDown :<C-u> silent call <SID>MoveBlockVertically(v:count1 * <SID>HalfPageSize())<CR>
-vnoremap <silent> <Plug>MoveBlockHalfPageUp :<C-u> silent call <SID>MoveBlockVertically(-v:count1 * <SID>HalfPageSize())<CR>
+vnoremap <silent> <Plug>MoveBlockHalfPageDown :<C-u> silent call <SID>MoveBlockVertically(v:count1 * <SID>GetHalfPageSize())<CR>
+vnoremap <silent> <Plug>MoveBlockHalfPageUp :<C-u> silent call <SID>MoveBlockVertically(-v:count1 * <SID>GetHalfPageSize())<CR>
 vnoremap <silent> <Plug>MoveBlockDown :<C-u> silent call <SID>MoveBlockVertically(v:count1)<CR>
 vnoremap <silent> <Plug>MoveBlockUp :<C-u> silent call <SID>MoveBlockVertically(-v:count1)<CR>
 vnoremap <silent> <Plug>MoveBlockRight :<C-u> silent call <SID>MoveBlockHorizontally(v:count1)<CR>
 vnoremap <silent> <Plug>MoveBlockLeft :<C-u> silent call <SID>MoveBlockHorizontally(-v:count1)<CR>
 
-nnoremap <silent> <Plug>MoveLineHalfPageDown :<C-u> silent call <SID>MoveLineVertically(v:count1 * <SID>HalfPageSize())<CR>
-nnoremap <silent> <Plug>MoveLineHalfPageUp :<C-u> silent call <SID>MoveLineVertically(-v:count1 * <SID>HalfPageSize())<CR>
+nnoremap <silent> <Plug>MoveLineHalfPageDown :<C-u> silent call <SID>MoveLineVertically(v:count1 * <SID>GetHalfPageSize())<CR>
+nnoremap <silent> <Plug>MoveLineHalfPageUp :<C-u> silent call <SID>MoveLineVertically(-v:count1 * <SID>GetHalfPageSize())<CR>
 nnoremap <silent> <Plug>MoveLineDown :<C-u> silent call <SID>MoveLineVertically(v:count1)<CR>
 nnoremap <silent> <Plug>MoveLineUp :<C-u> silent call <SID>MoveLineVertically(-v:count1)<CR>
 nnoremap <silent> <Plug>MoveCharRight :<C-u> silent call <SID>MoveCharHorizontally(v:count1)<CR>
 nnoremap <silent> <Plug>MoveCharLeft :<C-u> silent call <SID>MoveCharHorizontally(-v:count1)<CR>
 
-execute 'vmap' '<A-d>' '<Plug>MoveBlockHalfPageDown'
-execute 'vmap' '<A-u>' '<Plug>MoveBlockHalfPageUp'
-execute 'vmap' '<A-j>' '<Plug>MoveBlockDown'
-execute 'vmap' '<A-k>' '<Plug>MoveBlockUp'
-execute 'vmap' '<A-h>' '<Plug>MoveBlockLeft'
-execute 'vmap' '<A-l>' '<Plug>MoveBlockRight'
+execute 'vmap' '<A-D>' '<Plug>MoveBlockHalfPageDown'
+execute 'vmap' '<A-U>' '<Plug>MoveBlockHalfPageUp'
+execute 'vmap' '<A-J>' '<Plug>MoveBlockDown'
+execute 'vmap' '<A-K>' '<Plug>MoveBlockUp'
+execute 'vmap' '<A-H>' '<Plug>MoveBlockLeft'
+execute 'vmap' '<A-L>' '<Plug>MoveBlockRight'
 
-execute 'nmap' '<A-d>' '<Plug>MoveLineHalfPageDown'
-execute 'nmap' '<A-u>' '<Plug>MoveLineHalfPageUp'
-execute 'nmap' '<A-j>' '<Plug>MoveLineDown'
-execute 'nmap' '<A-k>' '<Plug>MoveLineUp'
-execute 'nmap' '<A-h>' '<Plug>MoveCharLeft'
-execute 'nmap' '<A-l>' '<Plug>MoveCharRight'
+execute 'nmap' '<A-D>' '<Plug>MoveLineHalfPageDown'
+execute 'nmap' '<A-U>' '<Plug>MoveLineHalfPageUp'
+execute 'nmap' '<A-J>' '<Plug>MoveLineDown'
+execute 'nmap' '<A-K>' '<Plug>MoveLineUp'
+execute 'nmap' '<A-H>' '<Plug>MoveCharLeft'
+execute 'nmap' '<A-L>' '<Plug>MoveCharRight'
 
 "================================================================================#
 "                                    End                                         #
