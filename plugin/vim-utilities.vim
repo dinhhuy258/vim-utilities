@@ -54,6 +54,8 @@ command! StartProfiling profile start ~/.profile.log | profile func * | profile 
 "                              Highlight search                                  #
 "================================================================================#
 
+" Reference: https://github.com/romainl/vim-cool
+
 augroup vim_utilities_highlight_search
   autocmd!
   " Trigger when hlsearch is toggled
@@ -95,8 +97,10 @@ endfunction
 call <SID>HighlightSearchToggle(0, &hlsearch)
 
 "================================================================================#
-"                 Put content of delete command to black hole                    #
+"                              Delete without saving                             #
 "================================================================================#
+
+" Reference: https://github.com/svermeulen/vim-cutlass
 
 function! s:OverrideSelectBindings() abort
   let i = 33
@@ -200,6 +204,8 @@ xnoremap <Leader>go :<C-u> silent call <SID>GitBrowse(v:false)<CR>
 "================================================================================#
 "                                 Vim move                                       #
 "================================================================================#
+
+" Reference: https://github.com/matze/vim-move
 
 function! s:MoveVertically(first, last, distance) abort
   if !&modifiable || a:distance == 0
