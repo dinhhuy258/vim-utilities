@@ -173,19 +173,19 @@ function s:GetHalfPageSize() abort
   return winheight('.') / 2
 endfunction
 
-vnoremap <silent> <Plug>MoveBlockHalfPageDown :<C-u> silent call vim_utilities#MoveBlockVertically(v:count1 * <SID>GetHalfPageSize())<CR>
-vnoremap <silent> <Plug>MoveBlockHalfPageUp :<C-u> silent call vim_utilities#MoveBlockVertically(-v:count1 * <SID>GetHalfPageSize())<CR>
-vnoremap <silent> <Plug>MoveBlockDown :<C-u> silent call vim_utilities#MoveBlockVertically(v:count1)<CR>
-vnoremap <silent> <Plug>MoveBlockUp :<C-u> silent call vim_utilities#MoveBlockVertically(-v:count1)<CR>
-vnoremap <silent> <Plug>MoveBlockRight :<C-u> silent call vim_utilities#MoveBlockHorizontally(v:count1)<CR>
-vnoremap <silent> <Plug>MoveBlockLeft :<C-u> silent call vim_utilities#MoveBlockHorizontally(-v:count1)<CR>
+vnoremap <silent> <Plug>MoveBlockHalfPageDown :<C-u> silent call vim_move#MoveBlockVertically(v:count1 * <SID>GetHalfPageSize())<CR>
+vnoremap <silent> <Plug>MoveBlockHalfPageUp :<C-u> silent call vim_move#MoveBlockVertically(-v:count1 * <SID>GetHalfPageSize())<CR>
+vnoremap <silent> <Plug>MoveBlockDown :<C-u> silent call vim_move#MoveBlockVertically(v:count1)<CR>
+vnoremap <silent> <Plug>MoveBlockUp :<C-u> silent call vim_move#MoveBlockVertically(-v:count1)<CR>
+vnoremap <silent> <Plug>MoveBlockRight :<C-u> silent call vim_move#MoveBlockHorizontally(v:count1)<CR>
+vnoremap <silent> <Plug>MoveBlockLeft :<C-u> silent call vim_move#MoveBlockHorizontally(-v:count1)<CR>
 
-nnoremap <silent> <Plug>MoveLineHalfPageDown :<C-u> silent call vim_utilities#MoveLineVertically(v:count1 * <SID>GetHalfPageSize())<CR>
-nnoremap <silent> <Plug>MoveLineHalfPageUp :<C-u> silent call vim_utilities#MoveLineVertically(-v:count1 * <SID>GetHalfPageSize())<CR>
-nnoremap <silent> <Plug>MoveLineDown :<C-u> silent call vim_utilities#MoveLineVertically(v:count1)<CR>
-nnoremap <silent> <Plug>MoveLineUp :<C-u> silent call vim_utilities#MoveLineVertically(-v:count1)<CR>
-nnoremap <silent> <Plug>MoveCharRight :<C-u> silent call vim_utilities#MoveCharHorizontally(v:count1)<CR>
-nnoremap <silent> <Plug>MoveCharLeft :<C-u> silent call vim_utilities#MoveCharHorizontally(-v:count1)<CR>
+nnoremap <silent> <Plug>MoveLineHalfPageDown :<C-u> silent call vim_move#MoveLineVertically(v:count1 * <SID>GetHalfPageSize())<CR>
+nnoremap <silent> <Plug>MoveLineHalfPageUp :<C-u> silent call vim_move#MoveLineVertically(-v:count1 * <SID>GetHalfPageSize())<CR>
+nnoremap <silent> <Plug>MoveLineDown :<C-u> silent call vim_move#MoveLineVertically(v:count1)<CR>
+nnoremap <silent> <Plug>MoveLineUp :<C-u> silent call vim_move#MoveLineVertically(-v:count1)<CR>
+nnoremap <silent> <Plug>MoveCharRight :<C-u> silent call vim_move#MoveCharHorizontally(v:count1)<CR>
+nnoremap <silent> <Plug>MoveCharLeft :<C-u> silent call vim_move#MoveCharHorizontally(-v:count1)<CR>
 
 execute 'vmap' '<A-D>' '<Plug>MoveBlockHalfPageDown'
 execute 'vmap' '<A-U>' '<Plug>MoveBlockHalfPageUp'
@@ -214,7 +214,7 @@ call s:DefaultHighlight()
 augroup vim_utilities_highlighted_yank
   autocmd!
   autocmd ColorScheme * call s:DefaultHighlight()
-  autocmd TextYankPost * call vim_utilities#HighlightedYank(v:event.regtype)
+  autocmd TextYankPost * call highlighted_yank#HighlightedYank(v:event.regtype)
 augroup END
 
 "================================================================================#
@@ -224,16 +224,16 @@ augroup END
 augroup vim_utilities_cursor_word_highlight
   autocmd!
   if has('vim_starting')
-    autocmd VimEnter * call vim_utilities#CursorWordHighlight() |
-          \ autocmd vim_utilities_cursor_word_highlight WinEnter,BufEnter * call vim_utilities#MatchAdd()
+    autocmd VimEnter * call cursor_word#CursorWordHighlight() |
+          \ autocmd vim_utilities_cursor_word_highlight WinEnter,BufEnter * call cursor_word#MatchAdd()
   else
-    call vim_utilities#CursorWordHighlight()
-    autocmd WinEnter,BufEnter * call vim_utilities#MatchAdd()
+    call cursor_word#CursorWordHighlight()
+    autocmd WinEnter,BufEnter * call cursor_word#MatchAdd()
   endif
-  autocmd ColorScheme * call vim_utilities#CursorWordHighlight()
-  autocmd CursorMoved,CursorMovedI * call vim_utilities#CursorMoved()
-  autocmd InsertEnter * call vim_utilities#MatchAdd(1)
-  autocmd InsertLeave * call vim_utilities#MatchAdd(0)
+  autocmd ColorScheme * call cursor_word#CursorWordHighlight()
+  autocmd CursorMoved,CursorMovedI * call cursor_word#CursorMoved()
+  autocmd InsertEnter * call cursor_word#MatchAdd(1)
+  autocmd InsertLeave * call cursor_word#MatchAdd(0)
 augroup END
 
 "================================================================================#
