@@ -218,6 +218,25 @@ augroup vim_utilities_highlighted_yank
 augroup END
 
 "================================================================================#
+"                                Cursor word                                     #
+"================================================================================#
+
+augroup vim_utilities_cursor_word_highlight
+  autocmd!
+  if has('vim_starting')
+    autocmd VimEnter * call vim_utilities#CursorWordHighlight() |
+          \ autocmd vim_utilities_cursor_word_highlight WinEnter,BufEnter * call vim_utilities#MatchAdd()
+  else
+    call vim_utilities#CursorWordHighlight()
+    autocmd WinEnter,BufEnter * call vim_utilities#MatchAdd()
+  endif
+  autocmd ColorScheme * call vim_utilities#CursorWordHighlight()
+  autocmd CursorMoved,CursorMovedI * call vim_utilities#CursorMoved()
+  autocmd InsertEnter * call vim_utilities#MatchAdd(1)
+  autocmd InsertLeave * call vim_utilities#MatchAdd(0)
+augroup END
+
+"================================================================================#
 "                                    End                                         #
 "================================================================================#
 
