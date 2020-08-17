@@ -202,6 +202,22 @@ execute 'nmap' '<A-H>' '<Plug>MoveCharLeft'
 execute 'nmap' '<A-L>' '<Plug>MoveCharRight'
 
 "================================================================================#
+"                             Highlighted yank                                   #
+"================================================================================#
+
+function! s:DefaultHighlight() abort
+  highlight default link Yank Visual
+endfunction
+
+call s:DefaultHighlight()
+
+augroup vim_utilities_highlighted_yank
+  autocmd!
+  autocmd ColorScheme * call s:DefaultHighlight()
+  autocmd TextYankPost * call vim_utilities#HighlightedYank(v:event.regtype)
+augroup END
+
+"================================================================================#
 "                                    End                                         #
 "================================================================================#
 
