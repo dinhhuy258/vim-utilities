@@ -231,9 +231,9 @@ augroup vim_utilities_cursor_word_highlight
     autocmd WinEnter,BufEnter * call cursor_word#MatchAdd()
   endif
   autocmd ColorScheme * call cursor_word#CursorWordHighlight()
-  autocmd CursorMoved,CursorMovedI * call cursor_word#CursorMoved()
-  autocmd InsertEnter * call cursor_word#MatchAdd(1)
-  autocmd InsertLeave * call cursor_word#MatchAdd(0)
+  autocmd CursorMoved * call cursor_word#CursorMoved()
+  autocmd InsertLeave * call cursor_word#MatchAdd()
+  autocmd InsertEnter * call cursor_word#MatchDelete()
 augroup END
 
 "================================================================================#
