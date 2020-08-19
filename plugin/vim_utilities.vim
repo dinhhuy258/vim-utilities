@@ -244,6 +244,23 @@ nnoremap <silent>gof :<C-u>call open#File("%:p")<CR>
 nnoremap <silent>goF :<C-u>call open#File(getcwd())<CR>
 
 "================================================================================#
+"                             Open recent files                                  #
+"================================================================================#
+
+function! s:OpenRecentFile() abort
+  let l:recent_files = v:oldfiles
+  let l:current_working_directory =  getcwd()
+  call filter(l:recent_files, {idx, val -> val =~ '^' . l:current_working_directory })
+
+  call fzf#run(fzf#wrap({
+        \ 'source': l:recent_files,
+        \ 'sink': 'e'
+        \ }))
+endfunction
+
+nnoremap <silent> <Leader>fe :call <SID>OpenRecentFile()<CR>
+
+"================================================================================#
 "                                    End                                         #
 "================================================================================#
 
