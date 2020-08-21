@@ -261,6 +261,21 @@ endfunction
 nnoremap <silent> <Leader>fe :call <SID>OpenRecentFile()<CR>
 
 "================================================================================#
+"                                Ping cursor                                     #
+"================================================================================#
+
+" Reference: https://github.com/uptech/vim-ping-cursor
+
+function! s:PingCursor()
+  set cursorline cursorcolumn
+  redraw
+  execute 'sleep250m'
+  set nocursorline nocursorcolumn
+endfunction
+
+nnoremap <silent> <Leader>p :call <SID>PingCursor()<CR>
+
+"================================================================================#
 "                                    End                                         #
 "================================================================================#
 
