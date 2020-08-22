@@ -37,7 +37,13 @@ function! cursor_word#MatchAdd() abort
   endif
   let w:cursor_word_match = 0
   if !l:vim_started || l:word ==# '' || len(l:word) !=# strchars(l:word) && l:word !~# s:alphabets || len(l:word) > 1000 | return | endif
-  let l:pattern = '\<' . escape(l:word, '~"\.^$[]*') . '\>'
+  let l:escape_word = escape(l:word, '~"\.^$[]*')
+  let l:escape_word_len = strlen(l:escape_word)
+  if  l:escape_word_len > 1 && l:escape_word[l:escape_word_len - 1] == '-'
+    let l:pattern = '\(\<' . l:escape_word . '\>\|\<' . l:escape_word[0: l:escape_word_len - 2] . '\>\)'
+  else
+    let l:pattern = '\(\<' . l:escape_word . '\>\|\<' . l:escape_word . '->\)'
+  endif
   let w:cursor_word_id0 = matchadd('CursorWord0', l:pattern, -100)
   let w:cursor_word_id1 = matchadd('CursorWord' . &l:cursorline, '\%' . l:linenr . 'l' . l:pattern, -100)
   let w:cursor_word_match = 1
