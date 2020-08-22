@@ -266,7 +266,7 @@ nnoremap <silent> <Leader>fe :call <SID>OpenRecentFile()<CR>
 
 " Reference: https://github.com/uptech/vim-ping-cursor
 
-function! s:PingCursor()
+function! s:PingCursor() abort
   set cursorline cursorcolumn
   redraw
   execute 'sleep250m'
@@ -274,6 +274,28 @@ function! s:PingCursor()
 endfunction
 
 nnoremap <silent> <Leader>p :call <SID>PingCursor()<CR>
+
+"================================================================================#
+"                               Visual searh                                     #
+"================================================================================#
+
+" Reference: https://github.com/bronson/vim-visual-star-search
+
+function! s:VisualSetSearch(cmdtype, ...) abort
+  let temp = @"
+  normal! gvy
+  if !a:0 || a:1 != 'raw'
+    let @" = escape(@", a:cmdtype.'\*')
+  endif
+  let @/ = substitute(@", '\n', '\\n', 'g')
+  let @/ = substitute(@/, '\[', '\\[', 'g')
+  let @/ = substitute(@/, '\~', '\\~', 'g')
+  let @/ = substitute(@/, '\.', '\\.', 'g')
+  let @" = temp
+endfunction
+
+xnoremap * :<C-u>call <SID>VisualSetSearch('/')<CR>/<C-R>=@/<CR><CR>
+xnoremap # :<C-u>call <SID>VisualSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 
 "================================================================================#
 "                                    End                                         #
