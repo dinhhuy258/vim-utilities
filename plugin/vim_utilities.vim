@@ -298,6 +298,16 @@ xnoremap * :<C-u>call <SID>VisualSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VisualSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 
 "================================================================================#
+"                                 Commentary                                     #
+"================================================================================#
+
+xnoremap <expr>   <Plug>ToggleComment commentary#toggle_comment()
+nnoremap <expr>   <Plug>ToggleCommentLine commentary#toggle_comment() . '_'
+
+xmap <Leader>/  <Plug>ToggleComment
+nmap <Leader>/  <Plug>ToggleCommentLine
+
+"================================================================================#
 "                                    End                                         #
 "================================================================================#
 
