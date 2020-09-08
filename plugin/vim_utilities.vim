@@ -308,6 +308,13 @@ xmap <Leader>/  <Plug>ToggleComment
 nmap <Leader>/  <Plug>ToggleCommentLine
 
 "================================================================================#
+"                                  Buffer                                        #
+"================================================================================#
+
+nmap <silent> <Leader>x :call buffer#CloseAllExceptCurrentBuffer()<CR>
+imap <silent> <Leader>x <Esc>:call buffer#CloseAllExceptCurrentBuffer()<CR>
+
+"================================================================================#
 "                                    End                                         #
 "================================================================================#
 
