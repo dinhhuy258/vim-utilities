@@ -3,11 +3,11 @@ set cpo&vim
 
 " Reference: https://github.com/tpope/vim-commentary
 
-function! s:surroundings() abort
+function! s:Surroundings() abort
   return split(substitute(substitute(substitute(&commentstring, '^$', '%s', ''), '\S\zs%s',' %s', '') ,'%s\ze\S', '%s ', ''), '%s', 1)
 endfunction
 
-function! s:strip_white_space(l, r, line) abort
+function! s:StripWhiteSpace(l, r, line) abort
   let [l, r] = [a:l, a:r]
   if l[-1:] ==# ' ' && stridx(a:line,l) == -1 && stridx(a:line,l[0:-2]) == 0
     let l = l[:-2]
@@ -18,7 +18,7 @@ function! s:strip_white_space(l, r, line) abort
   return [l, r]
 endfunction
 
-function! commentary#toggle_comment(...) abort
+function! commentary#ToggleComment(...) abort
   if !a:0
     let &operatorfunc = matchstr(expand('<sfile>'), '[^. ]*$')
     return 'g@'
@@ -28,11 +28,11 @@ function! commentary#toggle_comment(...) abort
     let [lnum1, lnum2] = [line("'["), line("']")]
   endif
 
-  let [l, r] = s:surroundings()
+  let [l, r] = s:Surroundings()
   let uncomment = 2
   for lnum in range(lnum1,lnum2)
     let line = matchstr(getline(lnum),'\S.*\s\@<!')
-    let [l, r] = s:strip_white_space(l,r,line)
+    let [l, r] = s:StripWhiteSpace(l,r,line)
     if len(line) && (stridx(line,l) || line[strlen(line)-strlen(r) : -1] != r)
       let uncomment = 0
     endif
