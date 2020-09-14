@@ -24,6 +24,10 @@ function! cursor_word#CursorWordHighlight() abort
 endfunction
 
 function! cursor_word#MatchAdd() abort
+  if &buftype != ""
+    return
+  endif
+
   let l:vim_started =  !has('vim_starting')
   if !l:vim_started && !get(w:, 'cursor_word_match') | return | endif
   let l:i = mode() ==# 'R' && col('.') > 1
