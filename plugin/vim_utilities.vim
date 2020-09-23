@@ -272,6 +272,14 @@ nmap <silent> <Leader>x :call buffer#CloseAllExceptCurrentBuffer()<CR>
 imap <silent> <Leader>x <Esc>:call buffer#CloseAllExceptCurrentBuffer()<CR>
 
 "================================================================================#
+"                                    Copy                                        #
+"================================================================================#
+
+nnoremap cpf :let @+ = expand("%:p")<CR>
+nnoremap cpr :let @+ = expand("%")<CR>
+nnoremap cpg :let @+ = system("git rev-parse --abbrev-ref HEAD")<CR>
+
+"================================================================================#
 "                                    End                                         #
 "================================================================================#
 
