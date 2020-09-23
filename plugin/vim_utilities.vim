@@ -7,24 +7,6 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 "================================================================================#
-"                       Remove trailing whitespaces                              #
-"================================================================================#
-
-command! FixWhitespace :%s/\s\+$//e
-
-"================================================================================#
-"                          Convert tab to space                                  s#
-"================================================================================#
-
-command! ConvertTabToSpace :%s/\t/    /g
-
-"================================================================================#
-"                                 Profiling                                      #
-"================================================================================#
-
-command! StartProfiling profile start ~/.profile.log | profile func * | profile file * | echo 'Profiling started'
-
-"================================================================================#
 "                              Highlight search                                  #
 "================================================================================#
 
@@ -272,12 +254,22 @@ nmap <silent> <Leader>x :call buffer#CloseAllExceptCurrentBuffer()<CR>
 imap <silent> <Leader>x <Esc>:call buffer#CloseAllExceptCurrentBuffer()<CR>
 
 "================================================================================#
-"                                    Copy                                        #
+"                               Miscellaneous                                    #
 "================================================================================#
 
+" Copy utils
 nnoremap cpf :let @+ = expand("%:p")<CR>
 nnoremap cpr :let @+ = expand("%")<CR>
 nnoremap cpg :let @+ = system("git rev-parse --abbrev-ref HEAD")<CR>
+
+" Remove trailing whitespaces
+command! FixWhitespace :%s/\s\+$//e
+
+" Convert tab to space
+command! ConvertTabToSpace :%s/\t/    /g
+
+" Profiling
+command! StartProfiling profile start ~/.profile.log | profile func * | profile file * | echo 'Profiling started'
 
 "================================================================================#
 "                                    End                                         #
