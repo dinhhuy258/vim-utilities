@@ -24,7 +24,7 @@ function! cursor_word#CursorWordHighlight() abort
 endfunction
 
 function! cursor_word#MatchAdd() abort
-  if &buftype != ""
+  if &buftype != "" && &buftype != "acwrite"
     return
   endif
 
