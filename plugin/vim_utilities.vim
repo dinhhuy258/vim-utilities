@@ -254,6 +254,14 @@ nmap <silent> <Leader>x :call buffer#CloseAllExceptCurrentBuffer()<CR>
 imap <silent> <Leader>x <Esc>:call buffer#CloseAllExceptCurrentBuffer()<CR>
 
 "================================================================================#
+"                                 Floaterm                                       #
+"================================================================================#
+
+command! FloatermToggle lua require'floaterm'.toggle_floaterm()
+nnoremap <Leader>tt :FloatermToggle<CR>
+tnoremap <Leader>tt <C-\><C-n>:FloatermToggle<CR>
+
+"================================================================================#
 "                               Miscellaneous                                    #
 "================================================================================#
 
