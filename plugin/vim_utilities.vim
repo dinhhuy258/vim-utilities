@@ -260,6 +260,12 @@ imap <silent> <Leader>x <Esc>:call buffer#CloseAllExceptCurrentBuffer()<CR>
 command! FloatermToggle lua require'floaterm'.toggle_floaterm()
 nnoremap <Leader>tt :FloatermToggle<CR>
 tnoremap <Leader>tt <C-\><C-n>:FloatermToggle<CR>
+command! FloatermKill lua require'floaterm'.kill_floaterm()
+nnoremap <Leader>tk :FloatermKill<CR>
+tnoremap <Leader>tk <C-\><C-n>:FloatermKill<CR>
+command! -bang FloatermNew lua require'floaterm'.new_floaterm('lazygit')
+nnoremap <Leader>tg :FloatermNew<CR>
+tnoremap <Leader>tg <C-\><C-n>:FloatermNew<CR>
 
 "================================================================================#
 "                               Miscellaneous                                    #
