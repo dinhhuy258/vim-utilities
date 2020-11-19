@@ -263,9 +263,9 @@ tnoremap <Leader>tt <C-\><C-n>:FloatermToggle<CR>
 command! FloatermKill lua require'floaterm'.kill_floaterm()
 nnoremap <Leader>tk :FloatermKill<CR>
 tnoremap <Leader>tk <C-\><C-n>:FloatermKill<CR>
-command! -bang FloatermNew lua require'floaterm'.new_floaterm('lazygit')
-nnoremap <Leader>tg :FloatermNew<CR>
-tnoremap <Leader>tg <C-\><C-n>:FloatermNew<CR>
+command! FloatermLazyGit lua require'floaterm'.new_floaterm('lazygit')
+nnoremap <Leader>tg :FloatermLazyGit<CR>
+tnoremap <Leader>tg <C-\><C-n>:FloatermLazyGit<CR>
 
 "================================================================================#
 "                               Miscellaneous                                    #

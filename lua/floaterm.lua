@@ -30,9 +30,10 @@ local function open_floaterm(cmd)
 
 
   if border_buf ~= nil then
-    if vim.call('win_gotoid', border_buf) == 0 then
+    if vim.call('win_gotoid', border_win) == 0 then
       border_win = vim.api.nvim_open_win(border_buf, true, border_opts)
       floaterm_win = vim.api.nvim_open_win(floaterm_buf, true, floaterm_opts)
+      vim.api.nvim_command('startinsert')
       return
     end
   end
@@ -79,35 +80,36 @@ local function open_floaterm(cmd)
 end
 
 local function kill_floaterm()
-  if floaterm_win ~= nil then
-    vim.api.nvim_win_close(floaterm_win, true)
-    floaterm_win = nil
-  end
-
-  if border_win ~= nil then
-    vim.api.nvim_win_close(border_win, true)
-    border_win = nil
-  end
-
   if border_buf ~= nil then
+    if vim.call('win_gotoid', border_win) ~= 0 then
+      vim.api.nvim_win_close(border_win, true)
+    end
+
     vim.api.nvim_command('silent bwipeout! '..border_buf)
+
+    border_win = nil
     border_buf = nil
   end
 
   if floaterm_buf ~= nil then
+    if vim.call('win_gotoid', floaterm_win) ~= 0 then
+      vim.api.nvim_win_close(floaterm_win, true)
+    end
+
     vim.api.nvim_command('silent bwipeout! '..floaterm_buf)
+
+    floaterm_win = nil
     floaterm_buf = nil
   end
 end
 
 local function hide_floaterm()
-  if floaterm_buf ~= nil then
-    vim.call('win_gotoid', floaterm_buf)
+  if floaterm_win ~= nil and vim.call('win_gotoid', floaterm_win) ~= 0 then
+    vim.call('win_gotoid', floaterm_win)
     vim.api.nvim_command('hide')
   end
 
-  if border_buf ~= nil then
-    vim.call('win_gotoid', border_buf)
+  if border_win ~= nil and vim.call('win_gotoid', border_win) ~= 0 then
     vim.api.nvim_command('hide')
   end
 
