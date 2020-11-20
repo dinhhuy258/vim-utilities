@@ -200,21 +200,6 @@ nnoremap <silent>gof :<C-u>call open#File("%:p")<CR>
 nnoremap <silent>goF :<C-u>call open#File(getcwd())<CR>
 
 "================================================================================#
-"                                Ping cursor                                     #
-"================================================================================#
-
-" Reference: https://github.com/uptech/vim-ping-cursor
-
-function! s:PingCursor() abort
-  set cursorline cursorcolumn
-  redraw
-  execute 'sleep250m'
-  set nocursorline nocursorcolumn
-endfunction
-
-nnoremap <silent> <Leader>p :call <SID>PingCursor()<CR>
-
-"================================================================================#
 "                               Visual searh                                     #
 "================================================================================#
 
@@ -257,19 +242,40 @@ imap <silent> <Leader>x <Esc>:call buffer#CloseAllExceptCurrentBuffer()<CR>
 "                                 Floaterm                                       #
 "================================================================================#
 
+command! -nargs=1 FloatermNew lua require'floaterm'.new_floaterm(<q-args>)
+
 command! FloatermToggle lua require'floaterm'.toggle_floaterm()
 nnoremap <Leader>tt :FloatermToggle<CR>
 tnoremap <Leader>tt <C-\><C-n>:FloatermToggle<CR>
+
 command! FloatermKill lua require'floaterm'.kill_floaterm()
 nnoremap <Leader>tk :FloatermKill<CR>
 tnoremap <Leader>tk <C-\><C-n>:FloatermKill<CR>
-command! FloatermLazyGit lua require'floaterm'.new_floaterm('lazygit')
-nnoremap <Leader>tg :FloatermLazyGit<CR>
-tnoremap <Leader>tg <C-\><C-n>:FloatermLazyGit<CR>
+
+nnoremap <Leader>tg :FloatermNew lazygit<CR>
+tnoremap <Leader>tg <C-\><C-n>:FloatermNew lazygit<CR>
 
 "================================================================================#
 "                               Miscellaneous                                    #
 "================================================================================#
+
+" Ping cursor
+" Reference: https://github.com/uptech/vim-ping-cursor
+
+function! s:PingCursor() abort
+  set cursorline cursorcolumn
+  redraw
+  execute 'sleep250m'
+  set nocursorline nocursorcolumn
+endfunction
+
+nnoremap <silent> <Leader>p :call <SID>PingCursor()<CR>
+
+" Last cmd utils
+function! SaveToLastCmd(cmd) abort
+  execute "silent !echo '" . a:cmd . "' > ~/.lastcmd"
+endfunction
+nnoremap <Leader>lt :FloatermNew '~/.lastcmd; read'<CR>
 
 " Copy utils
 nnoremap cpf :let @+ = expand("%:p")<CR>

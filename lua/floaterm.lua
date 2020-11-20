@@ -1,5 +1,33 @@
 local floaterm_buf, floaterm_win, border_buf, border_win
 
+local function kill_floaterm()
+  if border_buf ~= nil then
+    if vim.call('win_gotoid', border_win) ~= 0 then
+      vim.api.nvim_win_close(border_win, true)
+    end
+
+    if vim.call('bufexists', border_buf) ~= 0 then
+      vim.api.nvim_command('silent bwipeout! '..border_buf)
+    end
+
+    border_win = nil
+    border_buf = nil
+  end
+
+  if floaterm_buf ~= nil then
+    if vim.call('win_gotoid', floaterm_win) ~= 0 then
+      vim.api.nvim_win_close(floaterm_win, true)
+    end
+
+    if vim.call('bufexists', floaterm_buf) ~= 0 then
+      vim.api.nvim_command('silent bwipeout! '..floaterm_buf)
+    end
+
+    floaterm_win = nil
+    floaterm_buf = nil
+  end
+end
+
 local function open_floaterm(cmd)
   local width = vim.api.nvim_get_option("columns")
   local height = vim.api.nvim_get_option("lines")
@@ -28,13 +56,14 @@ local function open_floaterm(cmd)
     anchor = "NW"
   }
 
-
-  if border_buf ~= nil then
-    if vim.call('win_gotoid', border_win) == 0 then
+  if floaterm_buf ~= nil then
+    if vim.call('win_gotoid', floaterm_buf) == 0 and vim.call('bufexists', floaterm_buf) ~= 0 then
       border_win = vim.api.nvim_open_win(border_buf, true, border_opts)
       floaterm_win = vim.api.nvim_open_win(floaterm_buf, true, floaterm_opts)
       vim.api.nvim_command('startinsert')
       return
+    else
+      kill_floaterm()
     end
   end
 
@@ -70,37 +99,15 @@ local function open_floaterm(cmd)
   vim.api.nvim_win_set_option(floaterm_win, 'colorcolumn', "")
 
   if cmd ~= nil then
-    vim.call('termopen', cmd)
+    vim.call('termopen', 'bash -c ' .. cmd)
   else
     vim.api.nvim_command('terminal')
   end
   vim.api.nvim_command('startinsert')
   -- This option should be set after terminal command
   vim.api.nvim_buf_set_option(floaterm_buf, 'buflisted', false)
-end
 
-local function kill_floaterm()
-  if border_buf ~= nil then
-    if vim.call('win_gotoid', border_win) ~= 0 then
-      vim.api.nvim_win_close(border_win, true)
-    end
-
-    vim.api.nvim_command('silent bwipeout! '..border_buf)
-
-    border_win = nil
-    border_buf = nil
-  end
-
-  if floaterm_buf ~= nil then
-    if vim.call('win_gotoid', floaterm_win) ~= 0 then
-      vim.api.nvim_win_close(floaterm_win, true)
-    end
-
-    vim.api.nvim_command('silent bwipeout! '..floaterm_buf)
-
-    floaterm_win = nil
-    floaterm_buf = nil
-  end
+  vim.api.nvim_command('autocmd TermClose <buffer> ++once lua require\'floaterm\'.kill_floaterm()')
 end
 
 local function hide_floaterm()
