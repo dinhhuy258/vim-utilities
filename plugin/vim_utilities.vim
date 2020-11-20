@@ -125,37 +125,15 @@ call RedirectDefaultsToBlackHole()
 "                                 Vim move                                       #
 "================================================================================#
 
-function s:GetHalfPageSize() abort
-  return winheight('.') / 2
-endfunction
+xnoremap <silent> <A-L> >gv
+xnoremap <silent> <A-H> <gv
+xnoremap <silent> <A-K> :move '<-2<CR>gv=gv
+xnoremap <silent> <A-J> :move '>+1<CR>gv=gv
 
-vnoremap <silent> <Plug>MoveBlockHalfPageDown :<C-u> silent call vim_move#MoveBlockVertically(v:count1 * <SID>GetHalfPageSize())<CR>
-vnoremap <silent> <Plug>MoveBlockHalfPageUp :<C-u> silent call vim_move#MoveBlockVertically(-v:count1 * <SID>GetHalfPageSize())<CR>
-vnoremap <silent> <Plug>MoveBlockDown :<C-u> silent call vim_move#MoveBlockVertically(v:count1)<CR>
-vnoremap <silent> <Plug>MoveBlockUp :<C-u> silent call vim_move#MoveBlockVertically(-v:count1)<CR>
-vnoremap <silent> <Plug>MoveBlockRight :<C-u> silent call vim_move#MoveBlockHorizontally(v:count1)<CR>
-vnoremap <silent> <Plug>MoveBlockLeft :<C-u> silent call vim_move#MoveBlockHorizontally(-v:count1)<CR>
-
-nnoremap <silent> <Plug>MoveLineHalfPageDown :<C-u> silent call vim_move#MoveLineVertically(v:count1 * <SID>GetHalfPageSize())<CR>
-nnoremap <silent> <Plug>MoveLineHalfPageUp :<C-u> silent call vim_move#MoveLineVertically(-v:count1 * <SID>GetHalfPageSize())<CR>
-nnoremap <silent> <Plug>MoveLineDown :<C-u> silent call vim_move#MoveLineVertically(v:count1)<CR>
-nnoremap <silent> <Plug>MoveLineUp :<C-u> silent call vim_move#MoveLineVertically(-v:count1)<CR>
-nnoremap <silent> <Plug>MoveCharRight :<C-u> silent call vim_move#MoveCharHorizontally(v:count1)<CR>
-nnoremap <silent> <Plug>MoveCharLeft :<C-u> silent call vim_move#MoveCharHorizontally(-v:count1)<CR>
-
-execute 'vmap' '<A-D>' '<Plug>MoveBlockHalfPageDown'
-execute 'vmap' '<A-U>' '<Plug>MoveBlockHalfPageUp'
-execute 'vmap' '<A-J>' '<Plug>MoveBlockDown'
-execute 'vmap' '<A-K>' '<Plug>MoveBlockUp'
-execute 'vmap' '<A-H>' '<Plug>MoveBlockLeft'
-execute 'vmap' '<A-L>' '<Plug>MoveBlockRight'
-
-execute 'nmap' '<A-D>' '<Plug>MoveLineHalfPageDown'
-execute 'nmap' '<A-U>' '<Plug>MoveLineHalfPageUp'
-execute 'nmap' '<A-J>' '<Plug>MoveLineDown'
-execute 'nmap' '<A-K>' '<Plug>MoveLineUp'
-execute 'nmap' '<A-H>' '<Plug>MoveCharLeft'
-execute 'nmap' '<A-L>' '<Plug>MoveCharRight'
+nnoremap <silent> <A-L> >>
+nnoremap <silent> <A-H> <<
+nnoremap <silent> <A-K> :move .-2<CR>
+nnoremap <silent> <A-J> :move .+1<CR>
 
 "================================================================================#
 "                             Highlighted yank                                   #
@@ -235,8 +213,8 @@ nmap <Leader>/  <Plug>ToggleCommentLine
 "                                  Buffer                                        #
 "================================================================================#
 
-nmap <silent> <Leader>x :call buffer#CloseAllExceptCurrentBuffer()<CR>
-imap <silent> <Leader>x <Esc>:call buffer#CloseAllExceptCurrentBuffer()<CR>
+nmap <silent> <Leader>x :lua require'buffer'.close_all_except_current_buffer()<CR>
+imap <silent> <Leader>x <Esc>:lua require'buffer'.close_all_except_current_buffer()<CR>
 
 "================================================================================#
 "                                 Floaterm                                       #
