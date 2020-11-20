@@ -148,7 +148,7 @@ call s:DefaultHighlight()
 augroup vim_utilities_highlighted_yank
   autocmd!
   autocmd ColorScheme * call s:DefaultHighlight()
-  autocmd TextYankPost * call highlighted_yank#HighlightedYank(v:event.regtype)
+  autocmd TextYankPost * lua require'highlighted_yank'.highlighted_yank()
 augroup END
 
 "================================================================================#
