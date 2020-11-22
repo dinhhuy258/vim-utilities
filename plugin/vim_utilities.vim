@@ -122,36 +122,6 @@ endfunction
 call RedirectDefaultsToBlackHole()
 
 "================================================================================#
-"                                 Vim move                                       #
-"================================================================================#
-
-xnoremap <silent> <A-L> >gv
-xnoremap <silent> <A-H> <gv
-xnoremap <silent> <A-K> :move '<-2<CR>gv=gv
-xnoremap <silent> <A-J> :move '>+1<CR>gv=gv
-
-nnoremap <silent> <A-L> >>
-nnoremap <silent> <A-H> <<
-nnoremap <silent> <A-K> :move .-2<CR>
-nnoremap <silent> <A-J> :move .+1<CR>
-
-"================================================================================#
-"                             Highlighted yank                                   #
-"================================================================================#
-
-function! s:DefaultHighlight() abort
-  highlight default link Yank Visual
-endfunction
-
-call s:DefaultHighlight()
-
-augroup vim_utilities_highlighted_yank
-  autocmd!
-  autocmd ColorScheme * call s:DefaultHighlight()
-  autocmd TextYankPost * lua require'highlighted_yank'.highlighted_yank()
-augroup END
-
-"================================================================================#
 "                                Cursor word                                     #
 "================================================================================#
 
