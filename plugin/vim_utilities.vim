@@ -204,6 +204,17 @@ nnoremap <Leader>tg :FloatermNew lazygit<CR>
 tnoremap <Leader>tg <C-\><C-n>:FloatermNew lazygit<CR>
 
 "================================================================================#
+"                                   Git                                          #
+"================================================================================#
+
+command! GitCheckoutLocalBranch FloatermNew 'git checkout $(git branch | fzf)'
+command! GitCheckoutRemoteBranch FloatermNew 'git checkout --track $(git branch --all | fzf)'
+nnoremap <Leader>gc :GitCheckoutLocalBranch<CR>
+tnoremap <Leader>gc <C-\><C-n>:GitCheckoutLocalBranch<CR>
+nnoremap <Leader>gC :GitCheckoutRemoteBranch<CR>
+tnoremap <Leader>gC <C-\><C-n>:GitCheckoutRemoteBranch<CR>
+
+"================================================================================#
 "                               Miscellaneous                                    #
 "================================================================================#
 
