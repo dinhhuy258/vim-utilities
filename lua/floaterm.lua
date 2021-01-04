@@ -26,6 +26,8 @@ local function kill_floaterm()
     floaterm_win = nil
     floaterm_buf = nil
   end
+
+  vim.api.nvim_command('silent checktime')
 end
 
 local function open_floaterm(cmd)
@@ -134,6 +136,7 @@ local function toggle_floaterm()
     open_floaterm()
   else
     hide_floaterm()
+    vim.api.nvim_command('silent checktime')
   end
 end
 
