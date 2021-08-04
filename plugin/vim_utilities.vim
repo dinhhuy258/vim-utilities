@@ -180,13 +180,6 @@ xmap <Leader>/  <Plug>ToggleComment
 nmap <Leader>/  <Plug>ToggleCommentLine
 
 "================================================================================#
-"                                  Buffer                                        #
-"================================================================================#
-
-nmap <silent> <Leader>x :lua require'buffer'.close_all_except_current_buffer()<CR>
-imap <silent> <Leader>x <Esc>:lua require'buffer'.close_all_except_current_buffer()<CR>
-
-"================================================================================#
 "                                 Floaterm                                       #
 "================================================================================#
 
