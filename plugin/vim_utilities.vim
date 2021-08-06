@@ -196,11 +196,6 @@ tnoremap <Leader>tk <C-\><C-n>:FloatermKill<CR>
 nnoremap <Leader>tg :FloatermNew lazygit<CR>
 tnoremap <Leader>tg <C-\><C-n>:FloatermNew lazygit<CR>
 
-augroup vim_utilities_floaterm
-au!
-au FileType floaterm tnoremap <C-c> <C-\><C-n>:FloatermKill<CR>
-augroup END
-
 "================================================================================#
 "                                   Git                                          #
 "================================================================================#
