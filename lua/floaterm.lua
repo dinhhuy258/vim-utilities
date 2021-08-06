@@ -1,38 +1,45 @@
-local floaterm_buf, floaterm_win
-
-local function try_open(win_id)
-  return vim.fn.win_gotoid(win_id) > 0
-end
+local floaterm_win, floaterm_buf
 
 local function is_open()
-    if not floaterm_win then
-        return false
-    end
+  if not floaterm_win then
+    return false
+  end
 
-    local win_open = try_open(floaterm_win)
-    return win_open and vim.api.nvim_win_get_buf(floaterm_win) == floaterm_buf
+  return vim.fn.win_gotoid(floaterm_win) > 0 and vim.api.nvim_win_get_buf(floaterm_win) == floaterm_buf
+end
+
+local function close_floaterm_win()
+  if floaterm_win then
+    if vim.api.nvim_win_is_valid(floaterm_win) then
+      vim.api.nvim_win_close(floaterm_win, true)
+    end
+  end
+  floaterm_win = nil
+  vim.api.nvim_command "silent checktime"
+end
+
+local function close_floaterm_buf()
+  if floaterm_buf then
+    if vim.api.nvim_buf_is_valid(floaterm_buf) then
+      vim.api.nvim_buf_delete(floaterm_buf, { force = true })
+    end
+  end
+  floaterm_buf = nil
+end
+
+local function hide_floaterm()
+  vim.api.nvim_command "hide"
+  floaterm_win = nil
 end
 
 local function kill_floaterm()
-  if floaterm_buf ~= nil then
-    if vim.fn.win_gotoid(floaterm_win) ~= 0 then
-      vim.api.nvim_win_close(floaterm_win, true)
-    end
-
-    if vim.call('bufexists', floaterm_buf) ~= 0 then
-      vim.api.nvim_command('silent bwipeout! '..floaterm_buf)
-    end
-
-    floaterm_win = nil
-    floaterm_buf = nil
-  end
-
-  vim.api.nvim_command('silent checktime')
+  close_floaterm_win()
+  close_floaterm_buf()
 end
 
 local function open_floaterm(cmd)
-  local width = vim.api.nvim_get_option("columns")
-  local height = vim.api.nvim_get_option("lines")
+  local width = vim.api.nvim_get_option "columns"
+  local height = vim.api.nvim_get_option "lines"
   local win_height = math.ceil(height * 0.8 - 4)
   local win_width = math.ceil(width * 0.8)
   local row = math.ceil((height - win_height) / 2 - 1)
@@ -46,49 +53,45 @@ local function open_floaterm(cmd)
     row = row,
     col = col,
     anchor = "NW",
-    border = "single"
+    border = "single",
   }
 
-  if floaterm_buf ~= nil then
-    if vim.fn.win_gotoid(floaterm_buf) == 0 and vim.call('bufexists', floaterm_buf) ~= 0 then
-      floaterm_win = vim.api.nvim_open_win(floaterm_buf, true, floaterm_opts)
-      vim.api.nvim_command('startinsert')
-      return
-    else
-      kill_floaterm()
-    end
+  if floaterm_buf and vim.api.nvim_buf_is_valid(floaterm_buf) then
+    floaterm_win = vim.api.nvim_open_win(floaterm_buf, true, floaterm_opts)
+    vim.api.nvim_command "startinsert"
+    return
   end
 
   floaterm_buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_option(floaterm_buf, 'buftype', '')
-  vim.api.nvim_buf_set_option(floaterm_buf, 'bufhidden', 'hide')
-  vim.api.nvim_buf_set_option(floaterm_buf, 'swapfile', false)
-  vim.api.nvim_buf_set_option(floaterm_buf, 'filetype', 'floaterm')
+  vim.api.nvim_buf_set_option(floaterm_buf, "buftype", "")
+  vim.api.nvim_buf_set_option(floaterm_buf, "bufhidden", "hide")
+  vim.api.nvim_buf_set_option(floaterm_buf, "swapfile", false)
+  vim.api.nvim_buf_set_option(floaterm_buf, "filetype", "floaterm")
 
-  floaterm_win = vim.api.nvim_open_win(floaterm_buf, true, floaterm_opts)
-  vim.api.nvim_win_set_option(floaterm_win, 'winhl', 'Normal:Normal')
-  vim.api.nvim_win_set_option(floaterm_win, 'cursorline', true)
-  vim.api.nvim_win_set_option(floaterm_win, 'colorcolumn', "")
+  floaterm_win = vim.api.nvim_open_win(floaterm_buf, true, {
+    style = "minimal",
+    relative = "editor",
+    width = win_width,
+    height = win_height,
+    row = row,
+    col = col,
+    anchor = "NW",
+    border = "single",
+  })
+  vim.api.nvim_win_set_option(floaterm_win, "winhl", "Normal:Normal")
+  vim.api.nvim_win_set_option(floaterm_win, "cursorline", true)
+  vim.api.nvim_win_set_option(floaterm_win, "colorcolumn", "")
 
-  if cmd ~= nil then
-    vim.call('termopen', 'bash -c ' .. cmd)
+  if cmd then
+    vim.call("termopen", "bash -c " .. cmd)
   else
-    vim.api.nvim_command('terminal')
+    vim.api.nvim_command "terminal"
   end
-  vim.api.nvim_command('startinsert')
+  vim.api.nvim_command "startinsert"
   -- This option should be set after terminal command
-  vim.api.nvim_buf_set_option(floaterm_buf, 'buflisted', false)
+  vim.api.nvim_buf_set_option(floaterm_buf, "buflisted", false)
 
-  vim.api.nvim_command('autocmd TermClose <buffer> ++once lua require\'floaterm\'.kill_floaterm()')
-end
-
-local function hide_floaterm()
-  if floaterm_win ~= nil and vim.fn.win_gotoid(floaterm_win) ~= 0 then
-    vim.fn.win_gotoid(floaterm_win)
-    vim.api.nvim_command('hide')
-  end
-
-  floaterm_win = nil
+  vim.api.nvim_command "autocmd TermClose <buffer> ++once lua require'floaterm'.kill_floaterm()"
 end
 
 local function new_floaterm(cmd)
@@ -97,17 +100,15 @@ local function new_floaterm(cmd)
 end
 
 local function toggle_floaterm()
-  if floaterm_win == nil then
-    open_floaterm()
-  else
+  if is_open() then
     hide_floaterm()
-    vim.api.nvim_command('silent checktime')
+  else
+    open_floaterm()
   end
 end
 
 return {
   new_floaterm = new_floaterm,
   toggle_floaterm = toggle_floaterm,
-  kill_floaterm = kill_floaterm
+  kill_floaterm = kill_floaterm,
 }
-
