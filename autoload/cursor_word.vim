@@ -24,7 +24,8 @@ function! cursor_word#CursorWordHighlight() abort
 endfunction
 
 function! cursor_word#MatchAdd() abort
-  if &buftype != "" && &buftype != "acwrite"
+  vim.notify(vim.bo.buftype, vim.log.level.DEBUG)
+  if vim.bo.buftype != "" && vim.bo.buftype != "acwrite"
     return
   endif
 
