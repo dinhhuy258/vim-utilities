@@ -190,18 +190,6 @@ tnoremap <Leader>gC <C-\><C-n>:GitCheckoutRemoteBranch<CR>
 "                               Miscellaneous                                    #
 "================================================================================#
 
-" Ping cursor
-" Reference: https://github.com/uptech/vim-ping-cursor
-
-function! s:PingCursor() abort
-  set cursorline cursorcolumn
-  redraw
-  execute 'sleep250m'
-  set nocursorline nocursorcolumn
-endfunction
-
-nnoremap <silent> <Leader>p :call <SID>PingCursor()<CR>
-
 " Last cmd utils
 function! SaveToLastCmd(cmd) abort
   execute "silent !echo '" . a:cmd . "' > ~/.lastcmd"

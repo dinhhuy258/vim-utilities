@@ -1,11 +1,13 @@
 local M = {}
 
+vim.w.cursorword_match = false
+
 function M.matchdelete()
-  if vim.w.cursorword_match == 1 then
+  if vim.w.cursorword_match then
     vim.call("matchdelete", vim.w.cursorword_id)
   end
 
-  vim.w.cursorword_match = 0
+  vim.w.cursorword_match = false
 end
 
 function M.matchadd()
@@ -32,7 +34,7 @@ function M.matchadd()
 
   local pattern = [[\<]] .. cursorword .. [[\>]]
   vim.w.cursorword_id = vim.fn.matchadd("CursorWord", pattern, -1)
-  vim.w.cursorword_match = 1
+  vim.w.cursorword_match = true
 end
 
 return M
