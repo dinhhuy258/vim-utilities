@@ -124,28 +124,10 @@ call RedirectDefaultsToBlackHole()
 "================================================================================#
 "                                Cursor word                                     #
 "================================================================================#
-"
-autocmd VimEnter * call luaeval("require'cursor_word'.highlight_cursorword()")
-autocmd CursorMoved * call luaeval("require'cursor_word'.cursor_moved()")
-autocmd WinEnter * call luaeval("require'cursor_word'.win_enter()")
-autocmd WinLeave * call luaeval("require'cursor_word'.win_leave()")
 
-
-
-" augroup vim_utilities_cursor_word_highlight
-"   autocmd!
-"   if has('vim_starting')
-"     autocmd VimEnter * call cursor_word#CursorWordHighlight() |
-"           \ autocmd vim_utilities_cursor_word_highlight WinEnter,BufEnter * call cursor_word#MatchAdd()
-"   else
-"     call cursor_word#CursorWordHighlight()
-"     autocmd WinEnter,BufEnter * call cursor_word#MatchAdd()
-"   endif
-"   autocmd ColorScheme * call cursor_word#CursorWordHighlight()
-"   autocmd CursorMoved * call cursor_word#CursorMoved()
-"   autocmd InsertLeave * call cursor_word#MatchAdd()
-"   autocmd InsertEnter * call cursor_word#MatchDelete()
-" augroup END
+highlight CursorWord gui=underline
+autocmd CursorMoved,InsertLeave * call luaeval("require'cursor_word'.matchadd()")
+autocmd InsertEnter * call luaeval("require'cursor_word'.matchdelete()")
 
 "================================================================================#
 "                                 Open file                                      #
