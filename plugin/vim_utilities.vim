@@ -221,7 +221,7 @@ nnoremap <Leader>lt :FloatermNew '~/.lastcmd; read'<CR>
 
 " Copy utils
 nnoremap cpf :let @+ = expand("%:p")<CR>
-nnoremap cpr :let @+ = expand("%")<CR>
+nnoremap cpr :let @+ = fnamemodify(expand("%"), ":~:.")<CR>
 nnoremap cpg :let @+ = system("git rev-parse --abbrev-ref HEAD")<CR>
 
 " Remove trailing whitespaces
