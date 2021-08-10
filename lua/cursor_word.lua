@@ -28,7 +28,7 @@ function M.matchadd()
 
   vim.w.cursorword = cursorword
 
-  if cursorword == "" or #cursorword > 32 or string.find(cursorword, "[\192-\255]+") ~= nil then
+  if cursorword == "" or #cursorword > 100 or string.find(cursorword, "[\192-\255]+") ~= nil then
     return
   end
 
