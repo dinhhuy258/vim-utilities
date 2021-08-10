@@ -28,8 +28,7 @@ local function close_floaterm_buf()
 end
 
 local function hide_floaterm()
-  vim.api.nvim_command "hide"
-  floaterm_win = nil
+  close_floaterm_win()
 end
 
 local function kill_floaterm()
