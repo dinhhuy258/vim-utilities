@@ -11,14 +11,14 @@ function M.matchdelete()
 end
 
 function M.matchadd()
-  if (vim.bo.buftype ~= "" and vim.bo.buftype ~= "acwrite") then
+  if vim.bo.buftype ~= "" and vim.bo.buftype ~= "acwrite" then
     return
   end
 
   local column = vim.api.nvim_win_get_cursor(0)[2]
   local line = vim.api.nvim_get_current_line()
-  local cursorword =
-    vim.fn.matchstr(line:sub(1, column + 1), [[\k*$]]) .. vim.fn.matchstr(line:sub(column + 1), [[^\k*]]):sub(2)
+  local cursorword = vim.fn.matchstr(line:sub(1, column + 1), [[\k*$]])
+    .. vim.fn.matchstr(line:sub(column + 1), [[^\k*]]):sub(2)
 
   if cursorword == vim.w.cursorword then
     return
@@ -37,5 +37,12 @@ function M.matchadd()
   vim.w.cursorword_match = true
 end
 
-return M
+function M.setup()
+  vim.api.nvim_command "highlight CursorWord gui=underline"
+  -- vim.api.nvim_command("autocmd CursorMoved,InsertLeave * call luaeval(\"require'cursor_word'.matchadd()\")")
+  -- vim.api.nvim_command("autocmd InsertEnter * call luaeval(\"require'cursor_word'.matchdelete()\")")
+  vim.api.nvim_command "autocmd CursorMoved,InsertLeave * lua require'cursor_word'.matchadd()"
+  vim.api.nvim_command "autocmd InsertEnter * lua require'cursor_word'.matchdelete()"
+end
 
+return M

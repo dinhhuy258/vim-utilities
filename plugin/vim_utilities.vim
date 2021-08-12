@@ -85,9 +85,7 @@ call RedirectDefaultsToBlackHole()
 "                                Cursor word                                     #
 "================================================================================#
 
-highlight CursorWord gui=underline
-autocmd CursorMoved,InsertLeave * call luaeval("require'cursor_word'.matchadd()")
-autocmd InsertEnter * call luaeval("require'cursor_word'.matchdelete()")
+lua require'cursor_word'.setup()
 
 "================================================================================#
 "                                 Open file                                      #
