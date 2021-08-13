@@ -11,6 +11,7 @@ lua require'nohlsearch'.setup()
 lua require'cutlass'.setup()
 lua require'cursor_word'.setup()
 lua require'open'.setup()
+lua require'floaterm'.setup()
 
 " Reference: https://github.com/bronson/vim-visual-star-search
 
@@ -29,34 +30,6 @@ endfunction
 
 xnoremap * :<C-u>call <SID>VisualSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VisualSetSearch('?')<CR>?<C-R>=@/<CR><CR>
-
-"================================================================================#
-"                                 Floaterm                                       #
-"================================================================================#
-
-command! -nargs=1 FloatermNew lua require'floaterm'.new_floaterm(<q-args>)
-
-command! FloatermToggle lua require'floaterm'.toggle_floaterm()
-nnoremap <Leader>tt :FloatermToggle<CR>
-tnoremap <Leader>tt <C-\><C-n>:FloatermToggle<CR>
-
-command! FloatermKill lua require'floaterm'.kill_floaterm()
-nnoremap <Leader>tk :FloatermKill<CR>
-tnoremap <Leader>tk <C-\><C-n>:FloatermKill<CR>
-
-nnoremap <Leader>tg :FloatermNew lazygit<CR>
-tnoremap <Leader>tg <C-\><C-n>:FloatermNew lazygit<CR>
-
-"================================================================================#
-"                                   Git                                          #
-"================================================================================#
-
-command! GitCheckoutLocalBranch FloatermNew 'git checkout $(git branch | fzf)'
-command! GitCheckoutRemoteBranch FloatermNew 'git checkout --track $(git branch --all | fzf)'
-nnoremap <Leader>gc :GitCheckoutLocalBranch<CR>
-tnoremap <Leader>gc <C-\><C-n>:GitCheckoutLocalBranch<CR>
-nnoremap <Leader>gC :GitCheckoutRemoteBranch<CR>
-tnoremap <Leader>gC <C-\><C-n>:GitCheckoutRemoteBranch<CR>
 
 "================================================================================#
 "                               Miscellaneous                                    #

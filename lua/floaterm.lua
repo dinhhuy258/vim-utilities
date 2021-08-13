@@ -1,3 +1,5 @@
+local M = {}
+
 local floaterm_win, floaterm_buf
 
 local function is_open()
@@ -15,7 +17,6 @@ local function close_floaterm_win()
     end
   end
   floaterm_win = nil
-  vim.api.nvim_command "silent checktime"
 end
 
 local function close_floaterm_buf()
@@ -90,24 +91,65 @@ local function open_floaterm(cmd)
   -- This option should be set after terminal command
   vim.api.nvim_buf_set_option(floaterm_buf, "buflisted", false)
 
-  vim.api.nvim_command "autocmd TermClose <buffer> ++once lua require'floaterm'.kill_floaterm()"
+  vim.api.nvim_command "autocmd TermClose <buffer> ++once lua require'floaterm'.on_floaterm_close()"
 end
 
-local function new_floaterm(cmd)
+function M.on_floaterm_close()
+  vim.api.nvim_command "silent checktime"
+  floaterm_win = nil
+end
+
+function M.new_floaterm(cmd)
   kill_floaterm()
   open_floaterm(cmd)
 end
 
-local function toggle_floaterm()
+function M.toggle_floaterm()
   if is_open() then
     hide_floaterm()
+    M.on_floaterm_close()
   else
     open_floaterm()
   end
 end
 
-return {
-  new_floaterm = new_floaterm,
-  toggle_floaterm = toggle_floaterm,
-  kill_floaterm = kill_floaterm,
-}
+function M.setup()
+  local opts = {
+    noremap = true,
+    silent = true,
+  }
+
+  vim.api.nvim_set_keymap("n", "<Leader>tt", "<CMD>lua require('floaterm').toggle_floaterm()<CR>", opts)
+  vim.api.nvim_set_keymap("t", "<Leader>tt", "<CMD>lua require('floaterm').toggle_floaterm()<CR>", opts)
+
+  vim.api.nvim_set_keymap("n", "<Leader>tg", "<CMD>lua require('floaterm').new_floaterm('lazygit')<CR>", opts)
+  vim.api.nvim_set_keymap("t", "<Leader>tg", "<CMD>lua require('floaterm').new_floaterm('lazygit')<CR>", opts)
+
+  vim.api.nvim_set_keymap(
+    "n",
+    "<Leader>gc",
+    "<CMD>lua require('floaterm').new_floaterm('git checkout $(git branch | fzf)')<CR>",
+    opts
+  )
+  vim.api.nvim_set_keymap(
+    "t",
+    "<Leader>gc",
+    "<CMD>lua require('floaterm').new_floaterm('git checkout $(git branch | fzf)')<CR>",
+    opts
+  )
+
+  vim.api.nvim_set_keymap(
+    "n",
+    "<Leader>gc",
+    "<CMD>lua require('floaterm').new_floaterm('git checkout --track $(git branch --all | fzf)')<CR>",
+    opts
+  )
+  vim.api.nvim_set_keymap(
+    "t",
+    "<Leader>gc",
+    "<CMD>lua require('floaterm').new_floaterm('git checkout --track $(git branch --all | fzf)')<CR>",
+    opts
+  )
+end
+
+return M
