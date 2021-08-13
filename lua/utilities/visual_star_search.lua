@@ -16,7 +16,7 @@ function M.search()
 end
 
 function M.setup()
-  vim.cmd "xnoremap * :<C-u>call luaeval(\"require'visual_start_search'.search()\")<CR>/<C-R>=@/<CR><CR>"
+  vim.cmd "xnoremap * :<C-u>call luaeval(\"require'utilities.visual_start_search'.search()\")<CR>/<C-R>=@/<CR><CR>"
 end
 
 return M

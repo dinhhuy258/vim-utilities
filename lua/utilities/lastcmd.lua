@@ -12,10 +12,15 @@ function M.save_to_lastcmd(cmd)
 end
 
 function M.setup()
-  vim.api.nvim_set_keymap("n", "<Leader>lt", "<CMD>lua require('floaterm').new_floaterm('~/.lastcmd; read')<CR>", {
-    noremap = true,
-    silent = true,
-  })
+  vim.api.nvim_set_keymap(
+    "n",
+    "<Leader>lt",
+    "<CMD>lua require('utilities.floaterm').new_floaterm('~/.lastcmd; read')<CR>",
+    {
+      noremap = true,
+      silent = true,
+    }
+  )
 end
 
 return M

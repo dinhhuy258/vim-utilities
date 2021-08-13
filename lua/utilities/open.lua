@@ -21,11 +21,11 @@ function M.open_file(path)
 end
 
 function M.setup()
-  vim.api.nvim_set_keymap("n", "gof", "<CMD>lua require('open').open_file(vim.fn.expand('%:p'))<CR>", {
+  vim.api.nvim_set_keymap("n", "gof", "<CMD>lua require('utilities.open').open_file(vim.fn.expand('%:p'))<CR>", {
     noremap = true,
     silent = true,
   })
-  vim.api.nvim_set_keymap("n", "goF", "<CMD>lua require('open').open_file(vim.fn.getcwd())<CR>", {
+  vim.api.nvim_set_keymap("n", "goF", "<CMD>lua require('utilities.open').open_file(vim.fn.getcwd())<CR>", {
     noremap = true,
     silent = true,
   })

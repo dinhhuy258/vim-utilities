@@ -39,8 +39,8 @@ end
 
 function M.setup()
   vim.api.nvim_command "highlight CursorWord gui=underline"
-  vim.api.nvim_command "autocmd CursorMoved,InsertLeave * lua require'cursor_word'.matchadd()"
-  vim.api.nvim_command "autocmd InsertEnter * lua require'cursor_word'.matchdelete()"
+  vim.api.nvim_command "autocmd CursorMoved,InsertLeave * lua require'utilities.cursor_word'.matchadd()"
+  vim.api.nvim_command "autocmd InsertEnter * lua require'utilities.cursor_word'.matchdelete()"
 end
 
 return M

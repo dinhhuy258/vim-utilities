@@ -91,7 +91,7 @@ local function open_floaterm(cmd)
   -- This option should be set after terminal command
   vim.api.nvim_buf_set_option(floaterm_buf, "buflisted", false)
 
-  vim.api.nvim_command "autocmd TermClose <buffer> ++once lua require'floaterm'.on_floaterm_close()"
+  vim.api.nvim_command "autocmd TermClose <buffer> ++once lua require'utilities.floaterm'.on_floaterm_close()"
 end
 
 function M.on_floaterm_close()
@@ -119,22 +119,22 @@ function M.setup()
     silent = true,
   }
 
-  vim.api.nvim_set_keymap("n", "<Leader>tt", "<CMD>lua require('floaterm').toggle_floaterm()<CR>", opts)
-  vim.api.nvim_set_keymap("t", "<Leader>tt", "<CMD>lua require('floaterm').toggle_floaterm()<CR>", opts)
+  vim.api.nvim_set_keymap("n", "<Leader>tt", "<CMD>lua require('utilities.floaterm').toggle_floaterm()<CR>", opts)
+  vim.api.nvim_set_keymap("t", "<Leader>tt", "<CMD>lua require('utilities.floaterm').toggle_floaterm()<CR>", opts)
 
-  vim.api.nvim_set_keymap("n", "<Leader>tg", "<CMD>lua require('floaterm').new_floaterm('lazygit')<CR>", opts)
+  vim.api.nvim_set_keymap("n", "<Leader>tg", "<CMD>lua require('utilities.floaterm').new_floaterm('lazygit')<CR>", opts)
 
   vim.api.nvim_set_keymap(
     "n",
     "<Leader>gc",
-    "<CMD>lua require('floaterm').new_floaterm('git checkout $(git branch | fzf)')<CR>",
+    "<CMD>lua require('utilities.floaterm').new_floaterm('git checkout $(git branch | fzf)')<CR>",
     opts
   )
 
   vim.api.nvim_set_keymap(
     "n",
     "<Leader>gc",
-    "<CMD>lua require('floaterm').new_floaterm('git checkout --track $(git branch --all | fzf)')<CR>",
+    "<CMD>lua require('utilities.floaterm').new_floaterm('git checkout --track $(git branch --all | fzf)')<CR>",
     opts
   )
 end
