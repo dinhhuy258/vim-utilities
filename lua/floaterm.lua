@@ -123,7 +123,6 @@ function M.setup()
   vim.api.nvim_set_keymap("t", "<Leader>tt", "<CMD>lua require('floaterm').toggle_floaterm()<CR>", opts)
 
   vim.api.nvim_set_keymap("n", "<Leader>tg", "<CMD>lua require('floaterm').new_floaterm('lazygit')<CR>", opts)
-  vim.api.nvim_set_keymap("t", "<Leader>tg", "<CMD>lua require('floaterm').new_floaterm('lazygit')<CR>", opts)
 
   vim.api.nvim_set_keymap(
     "n",
@@ -131,21 +130,9 @@ function M.setup()
     "<CMD>lua require('floaterm').new_floaterm('git checkout $(git branch | fzf)')<CR>",
     opts
   )
-  vim.api.nvim_set_keymap(
-    "t",
-    "<Leader>gc",
-    "<CMD>lua require('floaterm').new_floaterm('git checkout $(git branch | fzf)')<CR>",
-    opts
-  )
 
   vim.api.nvim_set_keymap(
     "n",
-    "<Leader>gc",
-    "<CMD>lua require('floaterm').new_floaterm('git checkout --track $(git branch --all | fzf)')<CR>",
-    opts
-  )
-  vim.api.nvim_set_keymap(
-    "t",
     "<Leader>gc",
     "<CMD>lua require('floaterm').new_floaterm('git checkout --track $(git branch --all | fzf)')<CR>",
     opts
