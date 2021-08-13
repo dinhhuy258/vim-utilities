@@ -41,15 +41,6 @@ function! SaveToLastCmd(cmd) abort
 endfunction
 nnoremap <Leader>lt :FloatermNew '~/.lastcmd; read'<CR>
 
-" Remove trailing whitespaces
-command! FixWhitespace :%s/\s\+$//e
-
-" Convert tab to space
-command! ConvertTabToSpace :%s/\t/    /g
-
-" Profiling
-command! StartProfiling profile start ~/.profile.log | profile func * | profile file * | echo 'Profiling started'
-
 "================================================================================#
 "                                    End                                         #
 "================================================================================#
