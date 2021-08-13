@@ -12,24 +12,7 @@ lua require'cutlass'.setup()
 lua require'cursor_word'.setup()
 lua require'open'.setup()
 lua require'floaterm'.setup()
-
-" Reference: https://github.com/bronson/vim-visual-star-search
-
-function! s:VisualSetSearch(cmdtype, ...) abort
-  let temp = @"
-  normal! gvy
-  if !a:0 || a:1 != 'raw'
-    let @" = escape(@", a:cmdtype.'\*')
-  endif
-  let @/ = substitute(@", '\n', '\\n', 'g')
-  let @/ = substitute(@/, '\[', '\\[', 'g')
-  let @/ = substitute(@/, '\~', '\\~', 'g')
-  let @/ = substitute(@/, '\.', '\\.', 'g')
-  let @" = temp
-endfunction
-
-xnoremap * :<C-u>call <SID>VisualSetSearch('/')<CR>/<C-R>=@/<CR><CR>
-xnoremap # :<C-u>call <SID>VisualSetSearch('?')<CR>?<C-R>=@/<CR><CR>
+lua require'visual_star_search'.setup()
 
 "================================================================================#
 "                               Miscellaneous                                    #
