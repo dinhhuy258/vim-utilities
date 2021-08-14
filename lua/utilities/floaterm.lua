@@ -91,12 +91,18 @@ local function open_floaterm(cmd)
   -- This option should be set after terminal command
   vim.api.nvim_buf_set_option(floaterm_buf, "buflisted", false)
 
-  vim.api.nvim_command "autocmd TermClose <buffer> ++once lua require'utilities.floaterm'.on_floaterm_close()"
+  vim.api.nvim_command "autocmd TermClose <buffer> ++once lua require'utilities.floaterm'.on_term_close()"
 end
 
 function M.on_floaterm_close()
   vim.api.nvim_command "silent checktime"
-  floaterm_win = nil
+end
+
+function M.on_term_close()
+  M.on_floaterm_close()
+  vim.schedule(function()
+    kill_floaterm()
+  end)
 end
 
 function M.new_floaterm(cmd)
