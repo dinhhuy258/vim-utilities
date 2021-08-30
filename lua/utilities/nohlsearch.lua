@@ -1,7 +1,7 @@
 local M = {}
 
 function M.stop_hlsearch()
-  if vim.v.hlsearch == 1 and vim.fn.mode() == "n" then
+  if vim.v.hlsearch == 1 and vim.fn.mode() == "n" and vim.api.nvim_buf_get_option(0, "buftype") ~= "terminal" then
     vim.fn.feedkeys "<vim_utilities>(stop_hightlight_search)"
   end
 end
