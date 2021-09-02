@@ -17,6 +17,10 @@ local handle_job_data = function(data)
   return data
 end
 
+function M.is_supported(filetype)
+  return config[filetype] ~= nil
+end
+
 function M.format()
   local modifiable = vim.bo.modifiable
   if not modifiable then
