@@ -8,6 +8,7 @@ function M.setup()
   require("utilities.floaterm").setup()
   require("utilities.visual_star_search").setup()
   require("utilities.lastcmd").setup()
+  require("utilities.formatter").setup()
 end
 
 return M

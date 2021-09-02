@@ -2,6 +2,7 @@ local M = {}
 
 local config = {
   lua = { "stylua", "--search-parent-directories", "-" },
+  markdown = { "prettier", "--stdin-filepath", "$FILENAME" },
 }
 
 local handle_job_data = function(data)
@@ -29,13 +30,19 @@ function M.format()
   end
 
   local filetype = vim.bo.filetype
-  local formatters = config[filetype]
-  if formatters == nil then
+  local args = config[filetype]
+  if args == nil then
     vim.notify("[vim-utilities] No formatter found for filetype " .. filetype)
     return
   end
 
-  local job_id = vim.fn.jobstart(formatters, {
+  for idx, arg in ipairs(args) do
+    if arg == "$FILENAME" then
+      args[idx] = vim.api.nvim_buf_get_name(0)
+    end
+  end
+
+  local job_id = vim.fn.jobstart(args, {
     on_stdout = function(_, data, _)
       data = handle_job_data(data)
       if not data then
@@ -51,6 +58,12 @@ function M.format()
 
   vim.fn.chansend(job_id, vim.api.nvim_buf_get_lines(0, 0, -1, false))
   vim.fn.chanclose(job_id, "stdin")
+end
+
+function M.setup()
+  vim.api.nvim_command [[
+    autocmd FileType markdown nnoremap <buffer> <Leader>cf :lua require'utilities.formatter'.format()<CR>
+  ]]
 end
 
 return M
