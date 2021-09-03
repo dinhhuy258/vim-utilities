@@ -1,5 +1,20 @@
 local M = {}
 
+local mode_icons = {
+  ["n"] = { icon = "" },
+  ["v"] = { icon = "" },
+  ["V"] = { icon = "" },
+  ["i"] = { icon = "" },
+  ["s"] = { icon = "" },
+  ["S"] = { icon = "" },
+  ["ic"] = { icon = "" },
+  ["c"] = { icon = "" },
+  ["r"] = { icon = "Prompt" },
+  ["t"] = { icon = "" },
+  ["R"] = { icon = "凜" },
+  [""] = { icon = "" },
+}
+
 local special_filetypes = {
   NvimTree = {
     name = "File explorer",
@@ -274,6 +289,12 @@ local function line_percent_provider()
   return " " .. result .. "%% "
 end
 
+local function vim_mode_provider()
+  local mode = mode_icons[vim.api.nvim_get_mode()["mode"]] or mode_icons["n"]
+
+  return " " .. mode.icon .. " "
+end
+
 function M.get_statusline(active)
   local statusline = ""
 
@@ -283,22 +304,22 @@ function M.get_statusline(active)
     statusline = statusline .. separator_provider " "
     statusline = statusline .. special_filetype_provider(special_filetype)
 
-    if not special_filetype.show_section_right then
+    if not active or not special_filetype.show_section_right then
       return statusline
     end
-  end
-
-  if not active then
+  elseif active then
+    -- Section left
+    statusline = statusline .. separator_provider " "
+    statusline = statusline .. file_info_provider()
+  else
     return statusline
   end
-
-  -- Section left
-  statusline = statusline .. separator_provider " "
-  statusline = statusline .. file_info_provider()
 
   -- Section right
   statusline = statusline .. "%="
   statusline = statusline .. git_branch_provider()
+  statusline = statusline .. separator_provider " |"
+  statusline = statusline .. vim_mode_provider()
   statusline = statusline .. separator_provider " |"
   statusline = statusline .. line_column_provider()
   statusline = statusline .. separator_provider " |"
