@@ -136,7 +136,7 @@ local function vim_mode_provider()
   return " " .. mode.icon .. " "
 end
 
-function M.get_statusline(active)
+local function generate_statusline(active)
   local statusline = ""
 
   local special_filetype = special_filetypes[vim.bo.ft]
@@ -168,18 +168,34 @@ function M.get_statusline(active)
   return statusline
 end
 
-function M.set_statusline()
-  for _, win in pairs(vim.api.nvim_list_wins()) do
-    if vim.api.nvim_get_current_win() == win then
-      vim.wo[win].statusline = "%!v:lua.require'utilities.statusline'.get_statusline(v:true)"
-    elseif vim.api.nvim_buf_get_name(0) ~= "" then
-      vim.wo[win].statusline = "%!v:lua.require'utilities.statusline'.get_statusline(v:false)"
-    end
+local function create_augroup(autocmds, name)
+  vim.cmd("augroup " .. name)
+  vim.cmd "autocmd!"
+
+  for _, autocmd in ipairs(autocmds) do
+    vim.cmd("autocmd " .. table.concat(autocmd, " "))
+  end
+
+  vim.cmd "augroup END"
+end
+
+function M.statusline()
+  if vim.g.statusline_winid == vim.fn.win_getid() then
+    return generate_statusline(true)
+  else
+    return generate_statusline(false)
   end
 end
 
 function M.setup()
-  vim.cmd [[au BufEnter,BufWinEnter,WinEnter,BufReadPost * lua require'utilities.statusline'.set_statusline()]]
+  -- Ensures custom quickfix statusline isn't loaded
+  vim.g.qf_disable_statusline = true
+  vim.o.statusline = "%!v:lua.require'utilities.statusline'.statusline()"
+
+  create_augroup({
+    { "WinEnter,BufEnter", "*", "set statusline<" },
+    { "WinLeave,BufLeave", "*", "lua vim.wo.statusline=require'utilities.statusline'.statusline()" },
+  }, "utilities.statusline")
 end
 
 return M
