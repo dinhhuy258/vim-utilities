@@ -200,12 +200,20 @@ local function file_info_provider()
     return f_name
   end
 
-  local icon = devicons.get_icon(vim.fn.expand "%:t", vim.fn.expand "%:e")
+  local icon, icon_hl = devicons.get_icon(vim.fn.expand "%:t", vim.fn.expand "%:e")
+
   if icon == nil then
-    icon = ""
+    icon = " "
+  else
+    vim.cmd(
+      "hi StatuslineFileIcon guibg=NONE"
+        .. " guifg="
+        .. vim.fn.synIDattr(vim.fn.hlID(icon_hl), "fg")
+    )
+    icon = "%#StatuslineFileIcon#" .. icon .. "%#StatusLine# "
   end
 
-  return icon .. " " .. f_name
+  return icon .. f_name
 end
 
 local function git_branch_provider()
