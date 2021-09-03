@@ -286,15 +286,15 @@ function M.get_statusline(active)
     if not special_filetype.show_section_right then
       return statusline
     end
-  else
-    -- Section left
-    statusline = statusline .. separator_provider " "
-    statusline = statusline .. file_info_provider()
   end
 
   if not active then
     return statusline
   end
+
+  -- Section left
+  statusline = statusline .. separator_provider " "
+  statusline = statusline .. file_info_provider()
 
   -- Section right
   statusline = statusline .. "%="
