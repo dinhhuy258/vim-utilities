@@ -1,5 +1,43 @@
 local M = {}
 
+local special_filetypes = {
+  NvimTree = {
+    name = "File explorer",
+    icon = "פּ",
+    show_section_right = false,
+  },
+  fzf = {
+    name = "fzf",
+    icon = "",
+    show_section_right = false,
+  },
+  VimDatabase = {
+    name = "Database",
+    icon = "",
+    show_section_right = true,
+  },
+  floaterm = {
+    name = "Terminal",
+    icon = "",
+    show_section_right = false,
+  },
+  packer = {
+    name = "Packer",
+    icon = "",
+    show_section_right = false,
+  },
+  startify = {
+    name = "Startify",
+    icon = "",
+    show_section_right = true,
+  },
+  help = {
+    name = "Help",
+    icon = "龎",
+    show_section_right = true,
+  },
+}
+
 local head_cache = {}
 
 local function parent_pathname(path)
@@ -205,15 +243,15 @@ local function file_info_provider()
   if icon == nil then
     icon = " "
   else
-    vim.cmd(
-      "hi StatuslineFileIcon guibg=NONE"
-        .. " guifg="
-        .. vim.fn.synIDattr(vim.fn.hlID(icon_hl), "fg")
-    )
+    vim.cmd("hi StatuslineFileIcon guibg=NONE" .. " guifg=" .. vim.fn.synIDattr(vim.fn.hlID(icon_hl), "fg"))
     icon = "%#StatuslineFileIcon#" .. icon .. "%#StatusLine# "
   end
 
   return icon .. f_name
+end
+
+local function special_filetype_provider(special_filetype)
+  return special_filetype.icon .. " " .. special_filetype.name
 end
 
 local function git_branch_provider()
@@ -237,15 +275,26 @@ local function line_percent_provider()
 end
 
 function M.get_statusline(active)
-  if not active then
-    return ""
-  end
-
   local statusline = ""
 
-  -- Section left
-  statusline = statusline .. separator_provider " "
-  statusline = statusline .. file_info_provider()
+  local special_filetype = special_filetypes[vim.bo.ft]
+  if special_filetype then
+    -- Section left
+    statusline = statusline .. separator_provider " "
+    statusline = statusline .. special_filetype_provider(special_filetype)
+
+    if not special_filetype.show_section_right then
+      return statusline
+    end
+  else
+    -- Section left
+    statusline = statusline .. separator_provider " "
+    statusline = statusline .. file_info_provider()
+  end
+
+  if not active then
+    return statusline
+  end
 
   -- Section right
   statusline = statusline .. "%="
