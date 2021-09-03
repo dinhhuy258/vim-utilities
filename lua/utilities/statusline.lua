@@ -274,7 +274,12 @@ local function git_branch_provider()
     return ""
   end
 
-  return " " .. get_git_branch()
+  local git_branch = get_git_branch()
+  if git_branch == nil then
+    return ""
+  end
+
+  return " " .. git_branch
 end
 
 local function line_percent_provider()
