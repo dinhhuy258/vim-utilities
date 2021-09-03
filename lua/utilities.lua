@@ -9,6 +9,7 @@ function M.setup()
   require("utilities.visual_star_search").setup()
   require("utilities.lastcmd").setup()
   require("utilities.formatter").setup()
+  require("utilities.statusline").setup()
 end
 
 return M
