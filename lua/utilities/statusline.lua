@@ -4,15 +4,23 @@ local mode_icons = {
   ["n"] = { icon = "" },
   ["v"] = { icon = "" },
   ["V"] = { icon = "" },
-  ["i"] = { icon = "" },
-  ["s"] = { icon = "" },
-  ["S"] = { icon = "" },
-  ["ic"] = { icon = "" },
+  ["i"] = { icon = "פֿ" },
+  ["s"] = { icon = "פֿ" },
+  ["S"] = { icon = "פֿ" },
+  ["ic"] = { icon = "פֿ" },
   ["c"] = { icon = "" },
-  ["r"] = { icon = "Prompt" },
+  ["r"] = { icon = "" },
   ["t"] = { icon = "" },
-  ["R"] = { icon = "凜" },
-  [""] = { icon = "" },
+  ["R"] = { icon = "" },
+  [""] = { icon = "" },
+}
+
+local special_buftypes = {
+  terminal = {
+    name = "Terminal",
+    icon = "",
+    show_section_right = false,
+  },
 }
 
 local special_filetypes = {
@@ -140,12 +148,21 @@ local function generate_statusline(active)
   local statusline = ""
 
   local special_filetype = special_filetypes[vim.bo.ft]
+  local special_buftype = special_buftypes[vim.bo.bt]
   if special_filetype then
     -- Section left
     statusline = statusline .. separator_provider " "
     statusline = statusline .. special_filetype_provider(special_filetype)
 
     if not active or not special_filetype.show_section_right then
+      return statusline
+    end
+  elseif special_buftype then
+    -- Section left
+    statusline = statusline .. separator_provider " "
+    statusline = statusline .. special_filetype_provider(special_buftype)
+
+    if not active or not special_buftype.show_section_right then
       return statusline
     end
   elseif active then
