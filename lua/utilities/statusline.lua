@@ -31,6 +31,16 @@ local special_filetypes = {
     icon = "",
     show_section_right = true,
   },
+  ["git.nvim"] = {
+    name = "Git",
+    icon = "",
+    show_section_right = false,
+  },
+  diff = {
+    name = "diff",
+    icon = "",
+    show_section_right = false,
+  },
   floaterm = {
     name = "Terminal",
     icon = "",
