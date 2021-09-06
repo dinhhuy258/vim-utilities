@@ -147,8 +147,12 @@ end
 local function generate_statusline(active)
   local statusline = ""
 
-  local special_filetype = special_filetypes[vim.bo.ft]
-  local special_buftype = special_buftypes[vim.bo.bt]
+  local bufnr = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
+  local ft = vim.api.nvim_buf_get_option(bufnr, "ft")
+  local bt = vim.api.nvim_buf_get_option(bufnr, "bt")
+
+  local special_filetype = special_filetypes[ft]
+  local special_buftype = special_buftypes[bt]
   if special_filetype then
     -- Section left
     statusline = statusline .. separator_provider " "
