@@ -10,6 +10,7 @@ function M.setup()
   require("utilities.lastcmd").setup()
   require("utilities.formatter").setup()
   require("utilities.statusline").setup()
+  require("utilities.numb").setup()
 end
 
 return M
