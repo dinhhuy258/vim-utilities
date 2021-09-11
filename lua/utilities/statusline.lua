@@ -23,6 +23,11 @@ local special_buftypes = {
   },
 }
 
+local float_filetypes = {
+  fzf = "fzf",
+  floaterm = "floaterm",
+}
+
 local special_filetypes = {
   NvimTree = {
     name = "File explorer",
@@ -88,19 +93,20 @@ local function separator_provider(separator)
   return separator
 end
 
-local function file_info_provider()
+local function file_info_provider(buf)
   if buffer_is_empty() then
     return ""
   end
 
-  local f_name = vim.fn.expand "%f"
+  local filename = vim.api.nvim_buf_get_name(buf)
+  local f_name = vim.fn.fnamemodify(filename, ":~:.")
 
   local ok, devicons = pcall(require, "nvim-web-devicons")
   if not ok then
-    return f_name
+    return filename
   end
 
-  local icon, icon_hl = devicons.get_icon(vim.fn.expand "%:t", vim.fn.expand "%:e")
+  local icon, icon_hl = devicons.get_icon(vim.fn.fnamemodify(filename, "%:t"), vim.fn.fnamemodify(filename, ":e"))
 
   if icon == nil then
     icon = " "
@@ -144,32 +150,43 @@ local function vim_mode_provider()
   return " " .. mode.icon .. " "
 end
 
-local function generate_statusline(active)
+local function generate_statusline(winid)
   local statusline = ""
+  local buf = vim.api.nvim_win_get_buf(winid)
+  local active_win = vim.api.nvim_get_current_win()
+  local active = winid == active_win
 
-  local special_filetype = special_filetypes[vim.bo.ft]
-  local special_buftype = special_buftypes[vim.bo.bt]
+  local current_buf_ft = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(active_win), "ft")
+
+  if float_filetypes[current_buf_ft] ~= nil and not active then
+    return statusline
+  end
+
+  local special_filetype = special_filetypes[vim.api.nvim_buf_get_option(buf, "ft")]
+  local special_buftype = special_buftypes[vim.api.nvim_buf_get_option(buf, "bt")]
+
+  -- Section left
+  statusline = statusline .. separator_provider " "
+
   if special_filetype then
-    -- Section left
-    statusline = statusline .. separator_provider " "
     statusline = statusline .. special_filetype_provider(special_filetype)
 
-    if not active or not special_filetype.show_section_right then
+    if not special_filetype.show_section_right then
       return statusline
     end
   elseif special_buftype then
-    -- Section left
-    statusline = statusline .. separator_provider " "
     statusline = statusline .. special_filetype_provider(special_buftype)
 
-    if not active or not special_buftype.show_section_right then
+    if not special_buftype.show_section_right then
       return statusline
     end
-  elseif active then
-    -- Section left
-    statusline = statusline .. separator_provider " "
-    statusline = statusline .. file_info_provider()
   else
+    statusline = statusline .. file_info_provider(buf)
+
+    return statusline
+  end
+
+  if not active then
     return statusline
   end
 
@@ -197,11 +214,30 @@ local function create_augroup(autocmds, name)
 end
 
 function M.statusline()
-  if vim.g.statusline_winid == vim.fn.win_getid() then
-    return generate_statusline(true)
-  else
-    return generate_statusline(false)
-  end
+  return generate_statusline(vim.api.nvim_get_current_win())
+end
+
+function M.inactive_statusline(winid)
+  return generate_statusline(winid)
+end
+
+-- Update statusline of inactive windows on the current tabpage
+function M.update_inactive_windows()
+  -- Uses vim.schedule to defer executing the function until after
+  -- all other autocommands have run. This will ensure that inactive windows
+  -- are updated after any changes.
+  vim.schedule(function()
+    local current_win = vim.api.nvim_get_current_win()
+
+    for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+      if vim.api.nvim_win_get_config(winid).relative == "" and winid ~= current_win then
+        vim.wo[winid].statusline = M.inactive_statusline(winid)
+      end
+    end
+
+    -- Reset local statusline of current window to use the global statusline for it
+    vim.wo.statusline = nil
+  end)
 end
 
 function M.setup()
@@ -210,8 +246,11 @@ function M.setup()
   vim.o.statusline = "%!v:lua.require'utilities.statusline'.statusline()"
 
   create_augroup({
-    { "WinEnter,BufEnter", "*", "set statusline<" },
-    { "WinLeave,BufLeave", "*", "lua vim.wo.statusline=require'utilities.statusline'.statusline()" },
+    {
+      "VimEnter,WinEnter,WinClosed,FileChangedShellPost",
+      "*",
+      "lua require'utilities.statusline'.update_inactive_windows()",
+    },
   }, "utilities.statusline")
 end
 
