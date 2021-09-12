@@ -231,8 +231,12 @@ function M.statusline()
 end
 
 function M.update_active_window(force_inactive)
-  local winid = vim.api.nvim_get_current_win()
-  vim.wo[winid].statusline = generate_statusline(vim.api.nvim_get_current_win(), force_inactive)
+  if not force_inactive then
+    vim.o.statusline = "%!v:lua.require'utilities.statusline'.statusline()"
+  else
+    local winid = vim.api.nvim_get_current_win()
+    vim.wo[winid].statusline = generate_statusline(vim.api.nvim_get_current_win(), force_inactive)
+  end
 end
 
 -- Update statusline of inactive windows on the current tabpage
