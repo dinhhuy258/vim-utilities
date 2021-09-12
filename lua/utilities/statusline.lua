@@ -93,7 +93,7 @@ local function separator_provider(separator)
   return separator
 end
 
-local function file_info_provider(buf)
+local function file_info_provider(buf, active)
   if buffer_is_empty() then
     return ""
   end
@@ -112,7 +112,13 @@ local function file_info_provider(buf)
     icon = " "
   else
     vim.cmd("hi StatuslineFileIcon guibg=NONE" .. " guifg=" .. vim.fn.synIDattr(vim.fn.hlID(icon_hl), "fg"))
-    icon = "%#StatuslineFileIcon#" .. icon .. "%#StatusLine# "
+    icon = "%#StatuslineFileIcon#" .. icon
+
+    if active then
+      icon = icon .. "%#StatusLine# "
+    else
+      icon = icon .. "%#StatusLineNC# "
+    end
   end
 
   return icon .. f_name
@@ -181,7 +187,7 @@ local function generate_statusline(winid)
       return statusline
     end
   else
-    statusline = statusline .. file_info_provider(buf)
+    statusline = statusline .. file_info_provider(buf, active)
   end
 
   if not active then
