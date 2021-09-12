@@ -157,18 +157,12 @@ local function vim_mode_provider()
 end
 
 local function generate_statusline(winid, force_inactive)
+  local statusline = ""
   local buf = vim.api.nvim_win_get_buf(winid)
   local active_win = vim.api.nvim_get_current_win()
   local active = winid == active_win
   if force_inactive == true then
     active = false
-  end
-
-  local statusline = ""
-  if active then
-    statusline = "%#StatusLine#"
-  else
-    statusline = "%#StatusLineNC#"
   end
 
   local current_buf_ft = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(active_win), "ft")
@@ -179,6 +173,12 @@ local function generate_statusline(winid, force_inactive)
 
   local special_filetype = special_filetypes[vim.api.nvim_buf_get_option(buf, "ft")]
   local special_buftype = special_buftypes[vim.api.nvim_buf_get_option(buf, "bt")]
+
+  if active then
+    statusline = "%#StatusLine#"
+  else
+    statusline = "%#StatusLineNC#"
+  end
 
   -- Section left
   statusline = statusline .. separator_provider " "
