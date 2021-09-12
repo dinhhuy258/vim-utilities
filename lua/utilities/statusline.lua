@@ -182,8 +182,6 @@ local function generate_statusline(winid)
     end
   else
     statusline = statusline .. file_info_provider(buf)
-
-    return statusline
   end
 
   if not active then
