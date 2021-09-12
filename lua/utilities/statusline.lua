@@ -115,9 +115,9 @@ local function file_info_provider(buf, active)
     icon = "%#StatuslineFileIcon#" .. icon
 
     if active then
-      icon = icon .. "%#StatusLine# "
+      icon = icon .. "%#StatusLine#"
     else
-      icon = icon .. "%#StatusLineNC# "
+      icon = icon .. "%#StatusLineNC#"
     end
   end
 
@@ -156,11 +156,20 @@ local function vim_mode_provider()
   return " " .. mode.icon .. " "
 end
 
-local function generate_statusline(winid)
-  local statusline = ""
+local function generate_statusline(winid, force_inactive)
   local buf = vim.api.nvim_win_get_buf(winid)
   local active_win = vim.api.nvim_get_current_win()
   local active = winid == active_win
+  if force_inactive == true then
+    active = false
+  end
+
+  local statusline = ""
+  if active then
+    statusline = "%#StatusLine#"
+  else
+    statusline = "%#StatusLineNC#"
+  end
 
   local current_buf_ft = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(active_win), "ft")
 
@@ -218,11 +227,12 @@ local function create_augroup(autocmds, name)
 end
 
 function M.statusline()
-  return generate_statusline(vim.api.nvim_get_current_win())
+  return generate_statusline(vim.api.nvim_get_current_win(), false)
 end
 
-function M.inactive_statusline(winid)
-  return generate_statusline(winid)
+function M.update_active_window(force_inactive)
+  local winid = vim.api.nvim_get_current_win()
+  vim.wo[winid].statusline = generate_statusline(vim.api.nvim_get_current_win(), force_inactive)
 end
 
 -- Update statusline of inactive windows on the current tabpage
@@ -235,7 +245,7 @@ function M.update_inactive_windows()
 
     for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
       if vim.api.nvim_win_get_config(winid).relative == "" and winid ~= current_win then
-        vim.wo[winid].statusline = M.inactive_statusline(winid)
+        vim.wo[winid].statusline = generate_statusline(winid, false)
       end
     end
 
@@ -254,6 +264,16 @@ function M.setup()
       "VimEnter,WinEnter,WinClosed,FileChangedShellPost",
       "*",
       "lua require'utilities.statusline'.update_inactive_windows()",
+    },
+    {
+      "FocusGained",
+      "*",
+      "lua require'utilities.statusline'.update_active_window(false)",
+    },
+    {
+      "FocusLost",
+      "*",
+      "lua require'utilities.statusline'.update_active_window(true)",
     },
   }, "utilities.statusline")
 end
