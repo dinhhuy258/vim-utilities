@@ -28,6 +28,10 @@ local float_filetypes = {
   floaterm = "floaterm",
 }
 
+local float_buftypes = {
+  terminal = "terminal",
+}
+
 local special_filetypes = {
   NvimTree = {
     name = "File explorer",
@@ -165,9 +169,10 @@ local function generate_statusline(winid, force_inactive)
     active = false
   end
 
-  local current_buf_ft = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(active_win), "ft")
+  local current_ft = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(active_win), "ft")
+  local current_bt = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(active_win), "bt")
 
-  if float_filetypes[current_buf_ft] ~= nil and not active then
+  if (float_filetypes[current_ft] ~= nil or float_buftypes[current_bt]) and not active then
     return statusline
   end
 
