@@ -121,7 +121,7 @@ local function file_info_provider(buf, active)
     end
   end
 
-  return icon .. f_name
+  return icon .. " " .. f_name
 end
 
 local function special_filetype_provider(special_filetype)
