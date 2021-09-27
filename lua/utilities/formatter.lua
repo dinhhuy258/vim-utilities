@@ -3,6 +3,7 @@ local M = {}
 local config = {
   lua = { "stylua", "--search-parent-directories", "-" },
   markdown = { "prettier", "--stdin-filepath", "$FILENAME" },
+  proto = { "clang-format", "$FILENAME" },
 }
 
 local handle_job_data = function(data)
@@ -62,7 +63,7 @@ end
 
 function M.setup()
   vim.api.nvim_command [[
-    autocmd FileType markdown nnoremap <buffer> <Leader>cf :lua require'utilities.formatter'.format()<CR>
+    autocmd FileType markdown,proto nnoremap <buffer> <Leader>cf :lua require'utilities.formatter'.format()<CR>
   ]]
 end
 
