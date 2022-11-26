@@ -10,6 +10,7 @@ function M.setup()
   require("utilities.formatter").setup()
   require("utilities.statusline").setup()
   require("utilities.numb").setup()
+  require("utilities.case").setup()
 end
 
 return M
