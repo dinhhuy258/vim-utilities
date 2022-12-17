@@ -33,7 +33,7 @@ local float_buftypes = {
 }
 
 local special_filetypes = {
-  NvimTree = {
+  sfm = {
     name = "File explorer",
     icon = "פּ",
     show_section_right = false,
