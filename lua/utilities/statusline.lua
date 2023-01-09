@@ -63,11 +63,6 @@ local special_filetypes = {
     icon = "",
     show_section_right = false,
   },
-  packer = {
-    name = "Packer",
-    icon = "",
-    show_section_right = false,
-  },
   startify = {
     name = "Startify",
     icon = "",
