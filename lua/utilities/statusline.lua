@@ -1,15 +1,15 @@
 local M = {}
 
 local mode_icons = {
-  ["n"] = { icon = "" },
-  ["v"] = { icon = "" },
-  ["V"] = { icon = "" },
-  ["i"] = { icon = "פֿ" },
-  ["s"] = { icon = "פֿ" },
-  ["S"] = { icon = "פֿ" },
-  ["ic"] = { icon = "פֿ" },
+  ["n"] = { icon = "󰋜" },
+  ["v"] = { icon = "󰈈" },
+  ["V"] = { icon = "󰉸" },
+  ["i"] = { icon = "󰙏" },
+  ["s"] = { icon = "󰙏" },
+  ["S"] = { icon = "󰙏" },
+  ["ic"] = { icon = "󰙏" },
   ["c"] = { icon = "" },
-  ["r"] = { icon = "" },
+  ["r"] = { icon = "󰍩" },
   ["t"] = { icon = "" },
   ["R"] = { icon = "" },
   [""] = { icon = "" },
@@ -35,7 +35,7 @@ local float_buftypes = {
 local special_filetypes = {
   sfm = {
     name = "File explorer",
-    icon = "פּ",
+    icon = "󰙅",
     show_section_right = false,
   },
   fzf = {
@@ -70,7 +70,7 @@ local special_filetypes = {
   },
   help = {
     name = "Help",
-    icon = "龎",
+    icon = "󰗚",
     show_section_right = true,
   },
 }
@@ -131,7 +131,7 @@ local function git_branch_provider()
   local gsd = vim.b.gitsigns_status_dict
 
   if gsd and gsd.head and #gsd.head > 0 then
-    return " " .. gsd.head .. " |"
+    return "󰊢 " .. gsd.head .. " |"
   end
 
   return ""
